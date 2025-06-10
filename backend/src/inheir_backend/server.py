@@ -6,7 +6,7 @@ from .config import AppConfig
 
 from .constants.middleware import cors_allowed_headers, cors_allowed_methods
 
-# from .middleware.auth import JWTMiddleware
+from .middleware.auth import JWTMiddleware
 
 from .routers.api.v1 import router as v1_router
 
@@ -28,6 +28,6 @@ app.add_middleware(
     allow_credentials=True,
 )
 
-# app.add_middleware(JWTMiddleware)
+app.add_middleware(JWTMiddleware)
 
 app.include_router(v1_router, prefix="/api/v1")
