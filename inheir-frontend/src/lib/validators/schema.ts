@@ -32,5 +32,8 @@ export const SignUpSchema = v.object({
 
 export const SignInSchema = v.object({
   email: emailValidator,
-  password: passwordRequiredValidator,
+  password: v.pipe(
+    passwordRequiredValidator,
+    passwordValidator
+  ),
 });

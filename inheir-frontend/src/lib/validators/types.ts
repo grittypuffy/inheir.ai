@@ -8,3 +8,5 @@ export type FeatureData = {
   title: string;
   description: string;
 }
+
+export type ValidStates = "none" | "warning" | "error" | "success" | undefined;
