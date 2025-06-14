@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+* {
+    box-sizing: border-box;
+}
+
+.surround {
+    @apply p-5 md:p-8 lg:p-10;
+}
+
+.bordered {
+    @apply border border-b-black;
+}
