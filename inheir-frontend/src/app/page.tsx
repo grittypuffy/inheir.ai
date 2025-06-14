@@ -1,8 +1,8 @@
 "use client"
 import AppContainer from "@/lib/components/AppContainer";
+import AuthForm from "@/lib/components/AuthForm";
 import { Card } from "@/lib/components/Card";
 import { FeatureData } from "@/lib/validators/types";
-import { Button } from "@fluentui/react-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const features: FeatureData[] = [
@@ -36,27 +36,37 @@ export default function Default() {
 
   return (
     <AppContainer>
-      <div className="min-h-screen surround border flex flex-col justify-start gap-3">
-        <div className="flex flex-col-reverse lg:justify-center lg:flex-row-reverse items-left justify-start border w-full">
-          <div className="flex flex-col items-center justify-center lg:items-start border gap-3">
-            <h1 className="text-2xl font-bold text-center">Welcome to Inheir.ai</h1>
-            <p className="text-lg text-center">An AI-powered legal research assistant</p>
-            <Button appearance="primary">Get Started</Button>
+      <div className="flex flex-col-reverse lg:flex-row-reverse items-center justify-center min-h-screen">
+        <AuthForm />
+        <div className="surround flex flex-col justify-between gap-3">
+          <div className="flex flex-col-reverse lg:justify-between lg:pl-20 lg:flex-row items-center justify-center w-full">
+            <div className="flex flex-col items-center justify-center lg:items-start gap-3">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">Welcome to Inheir.ai</h1>
+              <p className="text-lg">An AI-powered legal research assistant</p>
+            </div>
+            <div className="content-center flex items-center justify-center w-full lg:w-1/2">
+              <DotLottieReact
+                src="https://lottie.host/c203134d-7a12-4f88-ba8d-3c416a2b6463/88ImDgikGX.lottie"
+                loop
+                autoplay
+                style={{ width: "300px", height: "300px" }}
+              />
+            </div>
           </div>
-          <div className="border content-center flex items-center justify-center w-full lg:w-1/2">
-            <DotLottieReact
-              src="https://lottie.host/c6895877-2dd7-46da-a3b4-f5c3ab7563b1/8knctMy530.lottie"
-              loop
-              autoplay
-              style={{ width: "350px", height: "350px" }}
-            />
+          <div className="flex flex-col w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5">
+              {features.map((feature, i) => {
+                return (
+                  <Card feature={feature} key={i} />
+                )
+              }
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col flex-1  border w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ">
-            {features.map((feature, i) => (
-              <Card feature={feature} key={i} />
-            ))}
+          <div className="opacity-0 lg:opacity-100 flex items-end justify-center w-full lg:pt-10">
+            <p className="text-sm text-gray-500">
+              Copyright © 2025 Inheir.ai. All rights reserved.
+            </p>
           </div>
         </div>
       </div>
