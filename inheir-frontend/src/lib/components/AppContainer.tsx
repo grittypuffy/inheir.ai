@@ -7,7 +7,7 @@ const AppContainer = (
   return (
     <FluentProvider theme={webLightTheme}>
       <Suspense fallback={<ProgressBar thickness="large" />}>
-        <div className="w-full min-h-screen mx-auto max-w-7xl overflow-x-hidden">
+        <div className="w-full min-h-screen mx-auto overflow-x-hidden">
           {children}
         </div>
       </Suspense>
