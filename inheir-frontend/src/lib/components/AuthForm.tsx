@@ -3,7 +3,7 @@ import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
 import { SignUpData } from "@/lib/validators/types";
 import type { InputOnChangeData, SelectTabData, TabValue } from "@fluentui/react-components";
 import { Button, Field, Input, Tab, TabList } from "@fluentui/react-components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as v from "valibot";
 
 const AuthForm = () => {
@@ -71,6 +71,17 @@ const AuthForm = () => {
     validateFormData();
   }
 
+  const [focusState, setFocusState] = useState(false);
+  const onFocusChange = (isFocused: boolean) => {
+    setFocusState(isFocused);
+  };
+
+  useEffect(() => {
+    if (focusState) {
+      validateFormData();
+    }
+  }, [formData, focusState]);
+
   return (
     <div className="flex flex-col gap-5 items-center lg:justify-center surround w-full lg:w-1/3 bg-gray-100 border-t-4 border-dotted lg:border-l-4 lg:border-t-0 lg:h-screen">
       <div>
@@ -80,7 +91,12 @@ const AuthForm = () => {
         </TabList>
       </div>
       <div className="flex flex-col w-full px-6">
-        <form onSubmit={onSubmitHandler} className="flex flex-col gap-3 transition duration-500 ease-in-out">
+        <form
+          onSubmit={onSubmitHandler}
+          className="flex flex-col gap-3 transition duration-500 ease-in-out"
+          onFocus={() => onFocusChange(true)}
+          onBlur={() => onFocusChange(false)}
+        >
           {formType === 'signup' && (
             <div className="transition duration-300 ease-in-out transform translate-y-0 opacity-100 animate-fadeIn">
               <Field
@@ -92,7 +108,6 @@ const AuthForm = () => {
                   value={formData.name}
                   onChange={(_: any, data: InputOnChangeData) => {
                     setFormData(prev => ({ ...prev, name: data.value }))
-                    validateFormData();
                   }}
                 />
               </Field>
@@ -108,7 +123,6 @@ const AuthForm = () => {
               value={formData.email}
               onChange={(_: any, data: InputOnChangeData) => {
                 setFormData(prev => ({ ...prev, email: data.value }))
-                validateFormData();
               }}
             />
           </Field>
@@ -122,7 +136,6 @@ const AuthForm = () => {
               value={formData.password}
               onChange={(_: any, data: InputOnChangeData) => {
                 setFormData(prev => ({ ...prev, password: data.value }))
-                validateFormData();
               }}
             />
           </Field>
