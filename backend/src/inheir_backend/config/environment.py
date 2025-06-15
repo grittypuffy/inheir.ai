@@ -17,10 +17,10 @@ class EnvVarConfig(BaseSettings):
 
     # Knowledge base and document processing
     knowledge_base_endpoint: str
-    rag_endpoint: str
+    upload_endpoint: str
     azure_storage_account_connection_string: str
     kb_container_name: str
-    rag_container_name: str
+    upload_container_name: str
     ai_search_endpoint: str
     ai_search_api_key: str
     ai_search_index_name: str
@@ -48,10 +48,6 @@ class EnvVarConfig(BaseSettings):
     
     # Temporary file uploads
     tmp_upload_dir: str
-
-    # Azure blob storage
-    uploads_container: str = "uploads"
-    st_connection_string: str
 
     # Anonymous usage
     anonymous_user_id: str
