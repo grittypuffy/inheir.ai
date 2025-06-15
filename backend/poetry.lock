@@ -551,6 +551,24 @@ opentelemetry-sdk = ">=1.26,<2.0"
 psutil = ">=5.9,<8"
 
 [[package]]
+name = "azure-search-documents"
+version = "11.5.2"
+description = "Microsoft Azure Cognitive Search Client Library for Python"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "azure_search_documents-11.5.2-py3-none-any.whl", hash = "sha256:c949d011008a4b0bcee3db91132741b4e4d50ddb3f7e2f48944d949d4b413b11"},
+    {file = "azure_search_documents-11.5.2.tar.gz", hash = "sha256:98977dd1fa4978d3b7d8891a0856b3becb6f02cc07ff2e1ea40b9c7254ada315"},
+]
+
+[package.dependencies]
+azure-common = ">=1.1"
+azure-core = ">=1.28.0"
+isodate = ">=0.6.0"
+typing-extensions = ">=4.6.0"
+
+[[package]]
 name = "azure-storage-blob"
 version = "12.25.1"
 description = "Microsoft Azure Blob Storage Client Library for Python"
@@ -5586,4 +5604,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "4a486a636750ac55873228dbeceb89bde8154e70846472eacd9180b962e6dac4"
+content-hash = "8389db11814fa1c0d705cd8ce3cc2d9a35cffdffb259f6df7628a78dda243c61"

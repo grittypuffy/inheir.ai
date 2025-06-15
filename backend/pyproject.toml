@@ -35,6 +35,7 @@ azure-storage-blob = "^12.25.0"
 azure-ai-formrecognizer = "^3.3.3"
 python-multipart = "^0.0.20"
 ffmpeg-python = "^0.2.0"
+azure-search-documents = "^11.5.2"
 
 
 [build-system]

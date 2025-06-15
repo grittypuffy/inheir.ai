@@ -17,10 +17,10 @@ class EnvVarConfig(BaseSettings):
 
     # Knowledge base and document processing
     knowledge_base_endpoint: str
-    upload_endpoint: str
+    uploads_endpoint: str
     azure_storage_account_connection_string: str
     kb_container_name: str
-    upload_container_name: str
+    uploads_container_name: str
     ai_search_endpoint: str
     ai_search_api_key: str
     ai_search_index_name: str
@@ -46,9 +46,6 @@ class EnvVarConfig(BaseSettings):
     azure_openai_api_version: str
     azure_openai_model_name: str    
     
-    # Temporary file uploads
-    tmp_upload_dir: str
-
     # Anonymous usage
     anonymous_user_id: str
 

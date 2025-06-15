@@ -74,18 +74,15 @@ def ingest_document(file_path: str):
         return {"status": "error", "message": "Failed to process the document."}
 
 
-def search_documents(query: str, username: str):
-    results = config.search.search(
-        query,
-        filter=f"username eq '{username}'"
-    )
+def search_documents(query: str):
+    results = config.search.search(query)
     documents = []
     for result in results:
         documents.append(result["content"])
     return documents if documents else None
 
 
-def generate_response(query, documents, username):
+def generate_response(query, documents):
     document_string = "\n".join(documents)
     prompt = f"""
     With the following context and documents provided:
@@ -106,17 +103,16 @@ def generate_response(query, documents, username):
     return ret
 
 
-def process_query(query: str, username: str):
+def process_query(query: str):
     """
     Process the user query by searching for relevant documents and generating a response.
 
     :param query: The user query.
-    :param username: The username of the user.
     :return: The response generated based on the query and documents.
     """
-    documents = search_documents(query, username)
+    documents = search_documents(query)
     if documents:
-        response = generate_response(query, documents, username)
+        response = generate_response(query, documents)
         return {"response": response}
     else:
         return {"response": "Sorry, there are no relevant documents found for the query."}
