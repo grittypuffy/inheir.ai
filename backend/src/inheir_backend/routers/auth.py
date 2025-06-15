@@ -149,10 +149,7 @@ async def sign_out(response: Response):
             httponly=True,
             samesite="none"
         )
-        return {
-            "status": "success",
-            "message": "Log out successful"
-        }
+    
     except Exception as e:
         return JSONResponse(
             status_code=500,
