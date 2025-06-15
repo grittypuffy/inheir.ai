@@ -1,11 +1,11 @@
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
-from ..helpers import singleton
+from ..helpers.singleton import singleton
 
 load_dotenv()
 
 
-@singleton.singleton
+@singleton
 class EnvVarConfig(BaseSettings):
     environment: str
     cookie_domain: str

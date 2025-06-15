@@ -24,8 +24,7 @@ def process_document(file_path: str):
     """
 
     file_name = file_path.split("/")[-1]
-    blob_client = config.blob_service_client.get_blob_client(
-        container=config.env.kb_container_name, blob=file_name)
+    blob_client = config.knowledge_base.get_blob_client(file_name)
     properties = blob_client.get_blob_properties()
     content_type, _ = mimetypes.guess_type(file_path)
 
