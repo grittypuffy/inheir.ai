@@ -92,11 +92,7 @@ const AuthForm = () => {
                   value={formData.name}
                   onChange={(_: any, data: InputOnChangeData) => {
                     setFormData(prev => ({ ...prev, name: data.value }))
-                    if (data.value) {
-                      validateFormData();
-                    } else {
-                      setValidMsg(prev => ({ ...prev, name: "" }));
-                    }
+                    validateFormData();
                   }}
                 />
               </Field>
@@ -112,11 +108,7 @@ const AuthForm = () => {
               value={formData.email}
               onChange={(_: any, data: InputOnChangeData) => {
                 setFormData(prev => ({ ...prev, email: data.value }))
-                if (data.value) {
-                  validateFormData();
-                } else {
-                  setValidMsg(prev => ({ ...prev, email: "" }));
-                }
+                validateFormData();
               }}
             />
           </Field>
@@ -130,11 +122,7 @@ const AuthForm = () => {
               value={formData.password}
               onChange={(_: any, data: InputOnChangeData) => {
                 setFormData(prev => ({ ...prev, password: data.value }))
-                if (data.value) {
-                  validateFormData();
-                } else {
-                  setValidMsg(prev => ({ ...prev, password: "" }));
-                }
+                validateFormData();
               }}
             />
           </Field>
