@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 RUN pip install poetry
 
@@ -13,13 +13,13 @@ RUN mkdir uploads
 
 RUN apt-get update
 
-RUN apt-get install -y build-essential ca-certificates libssl-dev wget
+# RUN apt-get install -y build-essential ca-certificates libssl-dev wget
 
 COPY pyproject.toml poetry.lock ./
 
 RUN touch README.md
 
-RUN poetry env use python3.12
+RUN poetry env use python3.13
 
 COPY src/inheir_backend/ ./inheir_backend/
 
