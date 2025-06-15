@@ -1,6 +1,6 @@
 "use client"
 import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
-import { SignUpData, ValidStates } from "@/lib/validators/types";
+import { SignUpData } from "@/lib/validators/types";
 import type { InputOnChangeData, SelectTabData, TabValue } from "@fluentui/react-components";
 import { Button, Field, Input, Tab, TabList } from "@fluentui/react-components";
 import React, { useState } from "react";
@@ -14,57 +14,61 @@ const AuthForm = () => {
     password: ""
   });
 
-  const [validState, setValidState] = useState<{ [key: string]: ValidStates }>({
-    name: "none",
-    email: "none",
-    password: "none"
-  });
   const [validMsg, setValidMsg] = useState<{ [key: string]: string }>({
     name: "",
     email: "",
     password: ""
   });
 
-  const onTabHandler = (_: SelectTabData, data: SelectTabData) => {
-    setFormType(data.value);
-  };
+  const resetFormData = () => {
+    setFormData({
+      name: "",
+      email: "",
+      password: ""
+    });
+    setValidMsg({
+      name: "",
+      email: "",
+      password: ""
+    });
+  }
 
-  const onSubmitHandler = (e: React.FormEvent) => {
-    e.preventDefault()
+  const validateFormData = () => {
     const res = v.safeParse(formType === "signup" ? SignUpSchema : SignInSchema, formData);
-    const newValidState: { [key: string]: ValidStates } = {
-      name: "none",
-      email: "none",
-      password: "none"
-    };
-
     const newValidMsg: { [key: string]: string } = {
       name: "",
       email: "",
       password: ""
     };
+
     if (!res.success) {
       res.issues.forEach(issue => {
         if (issue.path) {
           issue.path.forEach((path) => {
             if (path.key === "name") {
-              newValidState.name = "error";
               newValidMsg.name = issue.message;
             }
             if (path.key === "email") {
-              newValidState.email = "error";
               newValidMsg.email = issue.message;
             }
             if (path.key === "password") {
-              newValidState.password = "error";
               newValidMsg.password = issue.message;
             }
           });
         }
       });
     }
-    setValidState(newValidState);
     setValidMsg(newValidMsg);
+  }
+
+  const onTabHandler = (_: SelectTabData, data: SelectTabData) => {
+    setFormType(data.value);
+    resetFormData();
+  };
+
+  const onSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault()
+    validateFormData();
   }
 
   return (
@@ -81,12 +85,19 @@ const AuthForm = () => {
             <div className="transition duration-300 ease-in-out transform translate-y-0 opacity-100 animate-fadeIn">
               <Field
                 label="Name"
-                validationState={validState.name}
+                validationState={validMsg.name ? "error" : "none"}
                 validationMessage={validMsg.name}
               >
                 <Input
                   value={formData.name}
-                  onChange={(_: any, data: InputOnChangeData) => setFormData(prev => ({ ...prev, name: data.value }))}
+                  onChange={(_: any, data: InputOnChangeData) => {
+                    setFormData(prev => ({ ...prev, name: data.value }))
+                    if (data.value) {
+                      validateFormData();
+                    } else {
+                      setValidMsg(prev => ({ ...prev, name: "" }));
+                    }
+                  }}
                 />
               </Field>
             </div>
@@ -94,23 +105,37 @@ const AuthForm = () => {
           <Field
             label="Email"
             className="transition duration-300 ease-in-out transform translate-y-0 opacity-100 animate-fadeIn"
-            validationState={validState.email}
+            validationState={validMsg.email ? "error" : "none"}
             validationMessage={validMsg.email}
           >
             <Input
               value={formData.email}
-              onChange={(_: any, data: InputOnChangeData) => setFormData(prev => ({ ...prev, email: data.value }))}
+              onChange={(_: any, data: InputOnChangeData) => {
+                setFormData(prev => ({ ...prev, email: data.value }))
+                if (data.value) {
+                  validateFormData();
+                } else {
+                  setValidMsg(prev => ({ ...prev, email: "" }));
+                }
+              }}
             />
           </Field>
           <Field
             label="Password"
             className="transition duration-300 ease-in-out transform translate-y-0 opacity-100 animate-fadeIn"
-            validationState={validState.password}
+            validationState={validMsg.password ? "error" : "none"}
             validationMessage={validMsg.password}
           >
             <Input
               value={formData.password}
-              onChange={(_: any, data: InputOnChangeData) => setFormData(prev => ({ ...prev, password: data.value }))}
+              onChange={(_: any, data: InputOnChangeData) => {
+                setFormData(prev => ({ ...prev, password: data.value }))
+                if (data.value) {
+                  validateFormData();
+                } else {
+                  setValidMsg(prev => ({ ...prev, password: "" }));
+                }
+              }}
             />
           </Field>
           <Button type="submit" className="transition duration-250 ease-in-out transform hover:shadow-md">Submit</Button>
