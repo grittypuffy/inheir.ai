@@ -2,6 +2,9 @@ from azure.storage.blob import BlobServiceClient, ContainerClient
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from langchain_openai import AzureChatOpenAI
+from azure.search.documents import SearchClient
+from langchain_openai import AzureChatOpenAI
+
 
 
 def get_document_analysis_client(form_recognizer_endpoint: str, form_recognizer_key: str) -> DocumentAnalysisClient:
