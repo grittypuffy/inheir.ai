@@ -36,13 +36,12 @@ export default function Default() {
 
   return (
     <AppContainer>
-      <div className="flex flex-col-reverse lg:flex-row-reverse items-center justify-center min-h-screen">
-        <AuthForm />
+      <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen">
         <div className="surround flex flex-col justify-between gap-3">
           <div className="flex flex-col-reverse lg:justify-between lg:pl-20 lg:flex-row items-center justify-center w-full">
             <div className="flex flex-col items-center justify-center lg:items-start gap-3">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">Welcome to Inheir.ai</h1>
-              <p className="text-lg">An AI-powered legal research assistant</p>
+              <p className="text-lg text-center lg:text-left">An AI-powered legal research assistant</p>
             </div>
             <div className="content-center flex items-center justify-center w-full lg:w-1/2">
               <DotLottieReact
@@ -63,11 +62,17 @@ export default function Default() {
               )}
             </div>
           </div>
-          <div className="opacity-0 lg:opacity-100 flex items-end justify-center w-full lg:pt-10">
+          <div className="opacity-0 lg:opacity-100 flex items-end justify-center w-full lg:py-10">
             <p className="text-sm text-gray-500">
               Copyright © 2025 Inheir.ai. All rights reserved.
             </p>
           </div>
+        </div>
+        <AuthForm />
+        <div className="visible lg:hidden flex items-end justify-center w-full py-5">
+          <p className="text-sm text-gray-500">
+            Copyright © 2025 Inheir.ai. All rights reserved.
+          </p>
         </div>
       </div>
     </AppContainer >

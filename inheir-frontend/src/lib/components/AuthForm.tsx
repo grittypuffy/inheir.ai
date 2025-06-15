@@ -83,14 +83,14 @@ const AuthForm = () => {
   }, [formData, focusState]);
 
   return (
-    <div className="flex flex-col gap-5 items-center lg:justify-center surround w-full lg:w-1/3 bg-gray-100 border-t-4 border-dotted lg:border-l-4 lg:border-t-0 lg:h-screen">
+    <div className="flex flex-col gap-5 items-center lg:justify-center surround w-full lg:w-1/3 bg-gray-100 border-t-4 border-b-4 border-dotted lg:border-l-4 lg:border-t-0 lg:border-b-0 lg:h-screen">
       <div>
         <TabList selectedValue={formType} onTabSelect={onTabHandler}>
           <Tab value={`signup`}>Sign Up</Tab>
           <Tab value={`signin`}>Sign In</Tab>
         </TabList>
       </div>
-      <div className="flex flex-col w-full px-6">
+      <div className="flex flex-col w-fit p-6">
         <form
           onSubmit={onSubmitHandler}
           className="flex flex-col gap-3 transition duration-500 ease-in-out"
