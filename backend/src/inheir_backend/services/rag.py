@@ -2,6 +2,7 @@ import os
 import logging
 import mimetypes
 import json
+from datetime import datetime
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.search.documents import SearchClient
@@ -29,7 +30,6 @@ def process_document(file_path: str):
     content_type, _ = mimetypes.guess_type(file_path)
 
     metadata = properties.metadata
-    username = metadata.get("username")
     filename = metadata.get("filename")
     blob_id = metadata.get("id")
 
@@ -47,7 +47,7 @@ def process_document(file_path: str):
                     extracted_text.append(line.content)
 
             # Return the extracted content as a list of lines
-            return {"id": blob_id, "content": "\n".join(extracted_text), "username": username, "metadata_file_path": file_path, "metadata_filename": filename}
+            return {"id": blob_id, "updated": str(datetime.now()), "content": "\n".join(extracted_text), "metadata_file_path": file_path, "metadata_filename": filename}
         elif content_type == "text/plain":
             blob_data = blob_client.download_blob().readall().decode("utf-8")
             return {"id": blob_id, "content": blob_data, "username": username, "metadata_file_path": file_path, "metadata_filename": filename}
@@ -56,34 +56,6 @@ def process_document(file_path: str):
     except Exception as e:
         logging.error(f"Error processing the document: {e}")
         return None
-
-
-def upload_knowledge_base_document(contents: dict):
-    """
-    Upload the processed document content to the RAG (Retrieval-Augmented Generation) container in Azure Blob Storage.
-
-    :param contents: The processed document content.
-    :return: The status of the upload.
-    """
-    try:
-        blob_id = contents.get("id")
-        content = contents.get("content")
-        username = contents.get("username")
-        metadata_file_path = contents.get("metadata_file_path")
-        metadata_filename = contents.get("metadata_filename")
-        file_name = f"{blob_id}.json"
-        data = json.dumps(contents)
-
-        blob_client = config.rag_container.get_blob_client(file_name)
-
-        blob_client.upload_blob(data, overwrite=True, metadata={
-                                "username": username, "filename": metadata_filename})
-
-        return {"status": "success", "message": "Document uploaded to RAG successfully."}
-
-    except Exception as e:
-        logging.error(f"Error uploading document to RAG: {e}")
-        return {"status": "error", "message": "Failed to upload document to RAG."}
 
 
 def ingest_document(file_path: str):
@@ -96,8 +68,8 @@ def ingest_document(file_path: str):
     processed_content = process_document(file_path)
     if processed_content:
         index_result = config.search.upload_documents([processed_content])
-        upload_status = upload_rag_document(processed_content)
-        return upload_status
+        return {"status": "error", "message": "Failed to process the document."}
+
     else:
         return {"status": "error", "message": "Failed to process the document."}
 

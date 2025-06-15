@@ -62,4 +62,4 @@ def update_user_metadata(hashed_file_name: str,  case_id: str | None, chat_id: s
 
     # results = ingest_document(
     #    f"{config.env.knowledge_base_endpoint}{hashed_filename}")
-    return {"status": "success", "url": f"{config.env.upload_endpoint}{hashed_filename}"}
+    return {"status": "success"}

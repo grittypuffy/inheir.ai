@@ -6,7 +6,7 @@ from .database import get_database
 from .environment import EnvVarConfig
 
 from ..helpers.singleton import singleton
-from ..helpers.service import get_document_analysis_client, get_storage_client
+from ..helpers.service import get_document_analysis_client, get_storage_client, get_llm, get_search
 
 load_dotenv()
 
@@ -27,6 +27,18 @@ class AppConfig:
 
         # Document analysis client for document intelligence (extraction of text and other data)
         self.document_analysis_client = get_document_analysis_client(self.env.document_intelligence_endpoint, self.env.document_intelligence_key)
+
+        # OpenAI LLM for LangChain
+        self.llm = get_llm(
+            self.env.azure_openai_api_key,
+            self.env.azure_openai_endpoint,
+            self.env.azure_openai_deployment,
+            self.env.azure_openai_api_version
+        )
+
+        # Azure AI Search for performing RAG on legal documents
+        self.search = get_search(
+            self.env.ai_search_index_name, self.env.ai_search_api_key, self.env.ai_search_endpoint)
 
 
 def get_config() -> AppConfig:
