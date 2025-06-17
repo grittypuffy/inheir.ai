@@ -13,7 +13,7 @@ from ..models.auth import SignInRequest, SignUpRequest, Token
 from ..helpers.auth import get_hashed_password, verify_password, sign_jwt, decode_jwt
 
 
-router = APIRouter()
+router = APIRouter(tags=["Authentication"])
 
 config: AppConfig = get_config()
 

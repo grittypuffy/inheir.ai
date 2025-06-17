@@ -3,13 +3,14 @@ from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import JSONResponse
 from ..config import AppConfig, get_config
-from ..models.case import CaseDetails, CaseSummary
+from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse
 from typing import Optional, List
 from ..services.rag import process_upload_document
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.chains.llm import LLMChain
+from ..helpers.serializer import serializer
 
-router = APIRouter()
+router = APIRouter(tags=["Case Analysis"])
 
 config: AppConfig = get_config()
 
@@ -127,3 +128,38 @@ async def create_case(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error analyzing location: {str(e)}") 
+
+
+@router.get("/", response_model=CaseMetaResponse)
+async def get_cases(req: Request):
+    user_id = req.state.user.get("user_id")
+    if not user_id:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "failed",
+                "success": False,
+                "reason": "Please sign in."
+            }
+        )
+    else:
+        case_details_collection = config.db["case_details"]
+        cursor = case_details_collection.find(
+            {"user_id": user_id},
+            {"_id": 1, "title": 1, "status": 1, "created_at": 1}
+        ).sort("created_at", -1)
+        cases = []
+        async for doc in cursor:
+            doc["_id"] = serializer(doc) 
+            doc["case_id"] = doc.pop("_id")
+            doc["created_at"] = str(doc["created_at"])
+            cases.append(CaseResponse(**doc))
+        cases_dict = {"cases": cases}
+        case_response = CaseMetaResponse(**cases_dict)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "cases": cases
+            }
+        )
+        

@@ -1,6 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from bson import ObjectId
 from typing import Optional, List
+from datetime import datetime
 
 from ..config import AppConfig, get_config
 
@@ -11,7 +12,24 @@ class CaseDetails(BaseModel):
     title: str = "Case"
     user_id: str = config.env.anonymous_user_id
     status: str = "Open" # Open | Resolved | Aborted
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {
+            datetime: lambda dt: dt.isoformat(),
+        }
+        allow_population_by_field_name = True
 
+class CaseResponse(BaseModel):
+    title: str
+    status: str
+    created_at: str
+
+class CaseMetaResponse(BaseModel):
+    cases: CaseResponse
+    status: str = "success"
+    success: str = True
+    reason: Optional[str] = None
 
 class Entity(BaseModel):
     name: str

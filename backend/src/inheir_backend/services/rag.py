@@ -10,7 +10,7 @@ from azure.core.credentials import AzureKeyCredential
 from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from langchain_community.callbacks import get_openai_callback
-from src.inheir_backend.config import get_config, AppConfig
+from inheir_backend.config import get_config, AppConfig
 
 config: AppConfig = get_config()
 
