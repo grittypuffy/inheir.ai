@@ -2,10 +2,10 @@
 import { isSignedIn, signIn } from "@/lib/utils";
 import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
 import { SignUpData } from "@/lib/validators/types";
-import type { InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
-import { Button, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
+import type { CheckboxOnChangeData, InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
+import { Button, Checkbox, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { setTimeout } from "timers";
 import * as v from "valibot";
 
@@ -31,6 +31,7 @@ const AuthForm = () => {
   };
 
   const [isValidUserName, setIsValidUserName] = useState(false);
+  const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -99,6 +100,7 @@ const AuthForm = () => {
     setIsValidUserName(false);
     setIsChecking(false);
     setIsLoading(false);
+    setIsPolicyAccepted(false);
   };
 
   const validateFormData = () => {
@@ -353,10 +355,21 @@ const AuthForm = () => {
                       style={{ minWidth: "200px" }}
                     />
                   </Field>
+                  <Checkbox
+                    label="This website requires cookies to function properly. I accept third-party cookies."
+                    labelPosition="after"
+                    onChange={(_: ChangeEvent<HTMLInputElement>, data: CheckboxOnChangeData) => {
+                      if (data.checked) {
+                        setIsPolicyAccepted(true);
+                      } else {
+                        setIsPolicyAccepted(false);
+                      }
+                    }}
+                  />
                   <Button
                     type="submit"
                     className="w-full max-w-xs mx-auto hover:shadow-md"
-                    disabled={isLoading}
+                    disabled={!isPolicyAccepted || isLoading}
                   >
                     {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
                   </Button>
@@ -407,7 +420,22 @@ const AuthForm = () => {
                   style={{ minWidth: "200px" }}
                 />
               </Field>
-              <Button type="submit" className="w-full max-w-xs hover:shadow-md">
+              <Checkbox
+                label="This website requires cookies to function properly. I accept third-party cookies."
+                labelPosition="after"
+                onChange={(_: ChangeEvent<HTMLInputElement>, data: CheckboxOnChangeData) => {
+                  if (data.checked) {
+                    setIsPolicyAccepted(true);
+                  } else {
+                    setIsPolicyAccepted(false);
+                  }
+                }}
+              />
+              <Button
+                type="submit"
+                className="w-full max-w-xs hover:shadow-md"
+                disabled={!isPolicyAccepted || isLoading}
+              >
                 {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
               </Button>
             </form>
