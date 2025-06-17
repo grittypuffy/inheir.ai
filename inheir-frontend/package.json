@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fluentui/react-components": "9.64.1",
+    "@fluentui/react-components": "^9.66.1",
     "@fluentui/react-icons": "2.0.302",
     "@lottiefiles/dotlottie-react": "^0.14.1",
     "next": "15.3.3",
