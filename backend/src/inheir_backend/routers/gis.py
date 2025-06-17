@@ -9,7 +9,7 @@ from ..config import AppConfig
 
 router = APIRouter(tags=["GIS Analysis"])
 
-config:AppConfig = AppConfig()
+config: AppConfig = AppConfig()
 
 class LocationRequest(BaseModel):
     address: str
@@ -26,14 +26,27 @@ class GISResponse(BaseModel):
     environmental_hazards: float
     economic_growth_potential: float
 
+gis_prompt = f"""Analyze the following address for real estate investment potential and return a JSON response with the following metrics:
+Address: {request.address} 
+Please provide a detailed analysis and return a JSON object with the following keys and their values (all values should be between 0 and 1):
+- property_buying_risk (0-1, where 1 is highest risk)
+- property_renting_risk (0-1, where 1 is highest risk)
+- flood_risk (0-1, where 1 is highest risk)
+- crime_rate (0-1, where 1 is highest risk)
+- air_quality_index (0-1, where 1 is best)
+- proximity_to_amenities (0-1, where 1 is best)
+- transportation_score (0-1, where 1 is best)
+- neighborhood_rating (0-1, where 1 is best)
+- environmental_hazards (0-1, where 1 is highest risk)
+- economic_growth_potential (0-1, where 1 is highest potential)
+
+Return ONLY the JSON object, without any explanation or formatting. No surrounding text, no markdown."""
+
+
 @router.post("/analyze", response_model=GISResponse)
 async def analyze_location(request: LocationRequest) -> Dict[str, Any]:
     try:
-        client = AzureOpenAI(
-            api_key=config.env.azure_openai_api_key,
-            api_version=config.env.azure_openai_api_version,
-            azure_endpoint=config.env.azure_openai_endpoint
-        )
+        client = config.llm
 
         prompt = f"""Analyze the following address for real estate investment potential and return a JSON response with the following metrics:
         Address: {request.address}

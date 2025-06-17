@@ -22,7 +22,7 @@ class Asset(BaseModel):
     name: str
     location: str | None
     asset_type: str
-    worth: str | None
+    net_worth: str | None
     coordinates: str | None
 
 class CaseSummary(BaseModel):
@@ -32,5 +32,8 @@ class CaseSummary(BaseModel):
     case_type: str
     entity: Optional[List[Entity]]
     asset: Optional[List[Asset]]
-    documents: Optional[List[str]]
+    document: str
+    supporting_documents: Optional[List[str]]
     summary: str
+    recommendations: List[str]
+    references: Optional[List[str]]

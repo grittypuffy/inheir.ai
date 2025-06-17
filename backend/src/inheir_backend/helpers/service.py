@@ -29,7 +29,7 @@ def get_llm(openai_api_key: str, endpoint: str, deployment: str, api_version: st
         azure_endpoint=endpoint,
         azure_deployment=deployment,
         api_version=api_version,
-        temperature=0,
+        temperature=0.7,
         max_tokens=5000,
         timeout=None,
         max_retries=2,

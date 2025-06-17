@@ -46,10 +46,10 @@ def process_upload_document(file_path: str):
                     extracted_text.append(line.content)
 
             # Return the extracted content as a list of lines
-            return {"id": blob_id, "updated": str(datetime.now()), "content": "\n".join(extracted_text), "metadata_file_path": file_path, "metadata_filename": filename}
+            return "\n".join(extracted_text)
         elif content_type == "text/plain":
             blob_data = blob_client.download_blob().readall().decode("utf-8")
-            return {"id": blob_id, "content": blob_data, "username": username, "metadata_file_path": file_path, "metadata_filename": filename}
+            return  blob_data
         else:
             return None
     except Exception as e:
