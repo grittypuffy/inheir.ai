@@ -189,7 +189,7 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign In Successful", description: "Redirecting..." }, "success");
-          // setTimeout(signIn, 300);
+          setTimeout(signIn, 300);
         }
         setIsLoading(false);
         return;
