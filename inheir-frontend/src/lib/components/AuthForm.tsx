@@ -4,6 +4,7 @@ import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
 import { SignUpData } from "@/lib/validators/types";
 import type { InputOnChangeData, SelectTabData, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
 import { Button, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
+import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
 import { setTimeout } from "node:timers";
 import React, { useEffect, useState } from "react";
 import * as v from "valibot";
@@ -32,6 +33,22 @@ const AuthForm = () => {
   const [isValidUserName, setIsValidUserName] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const EyeToggleButton = (showPassword: boolean) => {
+    return !showPassword ? (
+      <EyeRegular
+        className="cursor-pointer"
+        onClick={() => setShowPassword(!showPassword)}
+        title="Hide Password"
+      />
+    ) : (
+      <EyeOffRegular
+        className="cursor-pointer"
+        onClick={() => setShowPassword(!showPassword)}
+        title="Show Password"
+      />
+    );
+  }
 
   const resetFormData = () => {
     setFormData({
@@ -135,7 +152,7 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign Up Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign Up Successful", description: "Redirecting..." }, "success");
-          setTimeout(() => signIn(), 600);
+          setTimeout(() => signIn(), 300);
         }
         setIsLoading(false);
       }
@@ -163,7 +180,7 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign In Successful", description: "Redirecting..." }, "success");
-          setTimeout(() => signIn(), 600);
+          setTimeout(() => signIn(), 300);
         }
         setIsLoading(false);
       }
@@ -171,29 +188,31 @@ const AuthForm = () => {
   }
 
   const validateUserName = () => {
-    if (isValidUserName) {
-      setIsValidUserName(false);
-      setValidMsg(prev => ({ ...prev, username: "" }));
-      return;
-    }
     setIsChecking(true);
-    setTimeout(async () => {
-      const res: Response = await fetch(`/api/v1/auth/${formData.username}/valid`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      });
-
-      if (!res.ok) {
-        setValidMsg(prev => ({ ...prev, username: "Username is already taken" }));
+    if (isValidUserName) {
+      setTimeout(() => {
+        setIsValidUserName(false);
         setIsChecking(false);
-        return;
-      }
-      setValidMsg(prev => ({ ...prev, username: `Username "${formData.username}" is available` }));
-      setIsValidUserName(true);
-      setIsChecking(false);
-    }, 500);
+      }, 500);
+    } else {
+      setTimeout(async () => {
+        const res: Response = await fetch(`/api/v1/auth/${formData.username}/valid`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+
+        if (!res.ok) {
+          setValidMsg(prev => ({ ...prev, username: "Username is already taken" }));
+          setIsChecking(false);
+          return;
+        }
+        setValidMsg(prev => ({ ...prev, username: `Username "${formData.username}" is available` }));
+        setIsValidUserName(true);
+        setIsChecking(false);
+      }, 500);
+    }
   }
 
   useEffect(() => {
@@ -206,7 +225,7 @@ const AuthForm = () => {
   }, [formData, focusState]);
 
   return (
-    <div className="flex flex-col gap-5 items-center lg:justify-center surround w-full lg:w-1/3 bg-gray-100 border-t-4 border-b-4 border-dotted lg:border-l-6 lg:border-t-0 lg:border-b-0 lg:h-screen">
+    <div className="flex flex-col gap-5 items-center lg:justify-center surround w-full lg:w-3/8 bg-gray-100 border-t-4 border-b-4 border-dotted lg:border-l-6 lg:border-t-0 lg:border-b-0 lg:h-screen">
       <Toaster toasterId={toasterId} />
       <div>
         <TabList selectedValue={formType} onTabSelect={onTabHandler}>
@@ -214,124 +233,152 @@ const AuthForm = () => {
           <Tab value={`signin`}>Sign In</Tab>
         </TabList>
       </div>
-      <div className="flex flex-col w-fit p-6">
+      <div className="flex flex-col w-full p-6 items-center gap-y-5"
+        onFocus={() => onFocusChange(true)}
+        onBlur={() => onFocusChange(false)}
+      >
         {formType === 'signup' ? (
-          <form
-            onSubmit={signUpHandler}
-            className="flex flex-col gap-3 transition duration-500 ease-in-out"
-            onFocus={() => onFocusChange(true)}
-            onBlur={() => onFocusChange(false)}
-          >
-            <div className="flex flex-col w-full gap-3 transition duration-300 ease-in-out transform translate-y-0 opacity-100">
+          <>
+            <form
+              onSubmit={validateUserName}
+              className="flex flex-col gap-3 w-full max-w-md items-center"
+            >
               <Field
                 label="Username"
                 validationState={isValidUserName ? "success" : validMsg.username ? "error" : "none"}
                 validationMessage={validMsg.username}
+                className="w-full"
               >
                 <Input
                   value={formData.username}
                   appearance="underline"
-                  className="w-full"
                   onChange={(_: any, data: InputOnChangeData) => {
                     setFormData(prev => ({ ...prev, username: data.value }))
                   }}
                   disabled={isValidUserName}
+                  className="w-full"
+                  style={{ minWidth: "200px" }}
                 />
               </Field>
               <Button
-                className={`w-full transition duration-250 ease-in-out transform hover:shadow-md`}
+                type="submit"
+                className="w-full max-w-xs hover:shadow-md"
                 onClick={validateUserName}
                 disabled={!formData.username.length || isChecking}
               >
                 {isChecking ? (<Spinner size="extra-small" />) : isValidUserName ? "Change Username" : "Check Username"}
               </Button>
-              {isValidUserName &&
-                (
-                  <>
-                    <Field
-                      label="Full Name"
-                      validationState={validMsg.full_name ? "error" : "none"}
-                      validationMessage={validMsg.full_name}
-                    >
-                      <Input
-                        value={formData.full_name}
-                        appearance="underline"
-                        onChange={(_: any, data: InputOnChangeData) => {
-                          setFormData(prev => ({ ...prev, full_name: data.value }))
-                        }}
-                      />
-                    </Field>
-                    <Field
-                      label="Email"
-                      validationState={validMsg.email ? "error" : "none"}
-                      validationMessage={validMsg.email}
-                    >
-                      <Input
-                        value={formData.email}
-                        appearance="underline"
-                        onChange={(_: any, data: InputOnChangeData) => {
-                          setFormData(prev => ({ ...prev, email: data.value }))
-                        }}
-                      />
-                    </Field>
-                    <Field
-                      label="Password"
-                      validationState={validMsg.password ? "error" : "none"}
-                      validationMessage={validMsg.password}
-                    >
-                      <Input
-                        value={formData.password}
-                        appearance="underline"
-                        onChange={(_: any, data: InputOnChangeData) => {
-                          setFormData(prev => ({ ...prev, password: data.value }))
-                        }}
-                      />
-                    </Field>
-                    <Button type="submit" className="transition duration-250 ease-in-out transform hover:shadow-md">
-                      {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
-                    </Button>
-                  </>
-                )
-              }
-            </div>
-          </form>
+            </form>
+            {isValidUserName &&
+              (
+                <form
+                  onSubmit={signUpHandler}
+                  className="flex flex-col gap-3 w-full max-w-md"
+                >
+                  <Field
+                    label="Full Name"
+                    validationState={validMsg.full_name ? "error" : "none"}
+                    validationMessage={validMsg.full_name}
+                    className="w-full"
+                  >
+                    <Input
+                      value={formData.full_name}
+                      appearance="underline"
+                      onChange={(_: any, data: InputOnChangeData) => {
+                        setFormData(prev => ({ ...prev, full_name: data.value }))
+                      }}
+                      className="w-full"
+                      style={{ minWidth: "200px" }}
+                    />
+                  </Field>
+                  <Field
+                    label="Email"
+                    validationState={validMsg.email ? "error" : "none"}
+                    validationMessage={validMsg.email}
+                    className="w-full"
+                  >
+                    <Input
+                      type="email"
+                      value={formData.email}
+                      appearance="underline"
+                      onChange={(_: any, data: InputOnChangeData) => {
+                        setFormData(prev => ({ ...prev, email: data.value }))
+                      }}
+                      className="w-full"
+                      style={{ minWidth: "200px" }}
+                    />
+                  </Field>
+                  <Field
+                    label="Password"
+                    validationState={validMsg.password ? "error" : "none"}
+                    validationMessage={validMsg.password}
+                    className="w-full"
+                  >
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      contentAfter={EyeToggleButton(showPassword)}
+                      value={formData.password}
+                      appearance="underline"
+                      onChange={(_: any, data: InputOnChangeData) => {
+                        setFormData(prev => ({ ...prev, password: data.value }))
+                      }}
+                      className="w-full"
+                      style={{ minWidth: "200px" }}
+                    />
+                  </Field>
+                  <Button type="submit" className="w-full max-w-xs mx-auto hover:shadow-md">
+                    {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
+                  </Button>
+                </form>
+              )
+            }
+          </>
         ) : (
-          <form
-            onSubmit={signInHandler}
-            className="flex flex-col gap-3 transition duration-500 ease-in-out"
-            onFocus={() => onFocusChange(true)}
-            onBlur={() => onFocusChange(false)}
-          >
-            <Field
-              label="Username"
-              validationState={isValidUserName ? "success" : validMsg.username ? "error" : "none"}
-              validationMessage={validMsg.username}
+          <div className="flex flex-col w-full max-w-md">
+            <form
+              onSubmit={signInHandler}
+              className="flex flex-col gap-y-3 w-full items-center"
             >
-              <Input
-                value={formData.username}
-                appearance="underline"
-                onChange={(_: any, data: InputOnChangeData) => {
-                  setFormData(prev => ({ ...prev, username: data.value }))
-                }}
-              />
-            </Field>
-            <Field
-              label="Password"
-              validationState={validMsg.password ? "error" : "none"}
-              validationMessage={validMsg.password}
-            >
-              <Input
-                value={formData.password}
-                appearance="underline"
-                onChange={(_: any, data: InputOnChangeData) => {
-                  setFormData(prev => ({ ...prev, password: data.value }))
-                }}
-              />
-            </Field>
-            <Button type="submit" className="transition duration-250 ease-in-out transform hover:shadow-md">
-              {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
-            </Button>
-          </form>
+              <Field
+                label="Username"
+                validationState={isValidUserName ? "success" : validMsg.username ? "error" : "none"}
+                validationMessage={validMsg.username}
+                className="w-full"
+              >
+                <Input
+                  type="text"
+                  value={formData.username}
+                  appearance="underline"
+                  onChange={(_: any, data: InputOnChangeData) => {
+                    setFormData(prev => ({ ...prev, username: data.value }))
+                  }}
+                  className="w-full"
+                  style={{ minWidth: "200px" }}
+                />
+              </Field>
+              <Field
+                label="Password"
+                validationState={validMsg.password ? "error" : "none"}
+                validationMessage={validMsg.password}
+                className="w-full"
+              >
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  contentAfter={EyeToggleButton(showPassword)}
+                  value={formData.password}
+                  appearance="underline"
+                  onChange={(_: any, data: InputOnChangeData) => {
+                    setFormData(prev => ({ ...prev, password: data.value }))
+                  }}
+                  className="w-full"
+                  style={{ minWidth: "200px" }}
+                />
+              </Field>
+              <Button type="submit" className="w-full max-w-xs hover:shadow-md">
+                {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
+              </Button>
+            </form>
+          </div>
         )}
       </div>
     </div>
