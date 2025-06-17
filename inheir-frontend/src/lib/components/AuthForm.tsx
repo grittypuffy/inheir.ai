@@ -311,6 +311,7 @@ const AuthForm = () => {
                       onChange={(_: any, data: InputOnChangeData) => {
                         setFormData(prev => ({ ...prev, full_name: data.value }))
                       }}
+                      disabled={isLoading}
                       className="w-full"
                       style={{ minWidth: "200px" }}
                     />
@@ -328,6 +329,7 @@ const AuthForm = () => {
                       onChange={(_: any, data: InputOnChangeData) => {
                         setFormData(prev => ({ ...prev, email: data.value }))
                       }}
+                      disabled={isLoading}
                       className="w-full"
                       style={{ minWidth: "200px" }}
                     />
@@ -346,6 +348,7 @@ const AuthForm = () => {
                       onChange={(_: any, data: InputOnChangeData) => {
                         setFormData(prev => ({ ...prev, password: data.value }))
                       }}
+                      disabled={isLoading}
                       className="w-full"
                       style={{ minWidth: "200px" }}
                     />
@@ -380,6 +383,7 @@ const AuthForm = () => {
                   onChange={(_: any, data: InputOnChangeData) => {
                     setFormData(prev => ({ ...prev, username: data.value }))
                   }}
+                  disabled={isLoading}
                   className="w-full"
                   style={{ minWidth: "200px" }}
                 />
@@ -398,6 +402,7 @@ const AuthForm = () => {
                   onChange={(_: any, data: InputOnChangeData) => {
                     setFormData(prev => ({ ...prev, password: data.value }))
                   }}
+                  disabled={isLoading}
                   className="w-full"
                   style={{ minWidth: "200px" }}
                 />
