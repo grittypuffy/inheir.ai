@@ -551,6 +551,22 @@ opentelemetry-sdk = ">=1.26,<2.0"
 psutil = ">=5.9,<8"
 
 [[package]]
+name = "azure-search"
+version = "1.0.0b2"
+description = "Microsoft Azure Cognitive Search Client Library for Python"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "azure-search-1.0.0b2.zip", hash = "sha256:49cbb1937b2e256f6631d467f62f8a1c94a14c5fed84f6625d24bc7b210a25d4"},
+    {file = "azure_search-1.0.0b2-py2.py3-none-any.whl", hash = "sha256:ba3974224be1329d26e58e63df9c8561b416e7536b79a1c5576055dfb6c472ae"},
+]
+
+[package.dependencies]
+azure-core = ">=1.2.2,<2.0.0"
+msrest = ">=0.6.10"
+
+[[package]]
 name = "azure-search-documents"
 version = "11.5.2"
 description = "Microsoft Azure Cognitive Search Client Library for Python"
@@ -5604,4 +5620,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "8389db11814fa1c0d705cd8ce3cc2d9a35cffdffb259f6df7628a78dda243c61"
+content-hash = "49a3ef79f00350d5f345bd57edfd0533294b35130ef0e6994bcd6e3bb739842f"
