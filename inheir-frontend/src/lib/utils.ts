@@ -11,37 +11,23 @@ export const isSignedOut = (): boolean => {
   return !isSignedIn();
 }
 
-export const redirectIfSignedIn = () => {
-  if (isSignedIn()) {
-    redirect("/dashboard");
-  }
-  return null;
-}
-
-export const redirectIfSignedOut = () => {
-  if (isSignedOut()) {
-    redirect("/");
-  }
-  return null;
-}
-
 export const signIn = () => {
   if (typeof window === "undefined") return;
 
   localStorage.setItem("status", "in");
-  redirectIfSignedIn();
+  redirect("/dashboard");
 }
 
 export const signOut = () => {
   if (typeof window === "undefined") return;
 
   localStorage.removeItem("status");
-  redirectIfSignedOut();
+  redirect("/");
 }
 
 export const protect = (fn: Function) => {
   if (isSignedIn()) {
     return fn();
   }
-  redirectIfSignedOut();
+  redirect("/");
 }
