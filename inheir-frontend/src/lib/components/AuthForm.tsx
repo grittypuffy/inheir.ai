@@ -5,7 +5,7 @@ import { SignUpData } from "@/lib/validators/types";
 import type { InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
 import { Button, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
-import { setTimeout } from "node:timers";
+import { setTimeout } from "timers";
 import React, { useEffect, useState } from "react";
 import * as v from "valibot";
 
@@ -181,7 +181,8 @@ const AuthForm = () => {
           body: JSON.stringify({
             username: formData.username,
             password: formData.password,
-          })
+          }),
+          credentials: "include"
         });
 
         if (!res.ok) {
