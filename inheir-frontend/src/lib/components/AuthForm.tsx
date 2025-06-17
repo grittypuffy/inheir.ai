@@ -136,10 +136,10 @@ const AuthForm = () => {
 
   const signUpHandler = async (e: React.FormEvent) => {
     e.preventDefault()
-    ToastMessage({ message: "Signing Up..", description: "" }, "info")
     setIsLoading(true);
     setTimeout(async () => {
       if (validateFormData()) {
+        ToastMessage({ message: "Signing Up..", description: "" }, "info")
         const res: Response = await fetch('/api/v1/auth/sign_up', {
           method: 'POST',
           headers: {
@@ -156,15 +156,17 @@ const AuthForm = () => {
         }
         setIsLoading(false);
       }
+      setIsLoading(false);
+      ToastMessage({ message: "Sign Up Failed", description: "Improper data! Please follow the format specified" }, "error");
     }, 500)
   }
 
   const signInHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    ToastMessage({ message: "Signing In.." }, "info")
     setIsLoading(true);
     setTimeout(async () => {
       if (validateFormData()) {
+        ToastMessage({ message: "Signing In.." }, "info")
         const res: Response = await fetch('/api/v1/auth/sign_in', {
           method: 'POST',
           headers: {
@@ -184,6 +186,8 @@ const AuthForm = () => {
         }
         setIsLoading(false);
       }
+      setIsLoading(false);
+      ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
     }, 500);
   }
 
@@ -326,7 +330,11 @@ const AuthForm = () => {
                       style={{ minWidth: "200px" }}
                     />
                   </Field>
-                  <Button type="submit" className="w-full max-w-xs mx-auto hover:shadow-md">
+                  <Button
+                    type="submit"
+                    className="w-full max-w-xs mx-auto hover:shadow-md"
+                    disabled={isLoading}
+                  >
                     {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
                   </Button>
                 </form>
