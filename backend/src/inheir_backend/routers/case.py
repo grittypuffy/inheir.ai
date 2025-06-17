@@ -73,7 +73,7 @@ async def create_case(
     date = str(datetime.now())
     case_details = {"user_id": user_id, "title": title or f"Case - {date}"}
     case_details = CaseDetails(**case_details)
-    case = await case_details_collection.insert_one(case_details.dict())
+    case_insert_result = await case_details_collection.insert_one(case_details.dict())
     case_id = case_insert_result.inserted_id
     case_id = str(case_inserted_id)
 
@@ -82,7 +82,7 @@ async def create_case(
 
     supporting_documents_urls = []
     for supporting_document in supporting_documents:
-        user_supporting_document = await upload_user_file(document, user_id=user_id, case_id=case_id, chat_id=None, case=True)
+        user_supporting_document = await upload_user_file(supporting_document, user_id=user_id, case_id=case_id, chat_id=None, case=True)
         supporting_document_url = user_supporting_document.get("url")
         supporting_documents_urls.append(supporting_document_url)
     
@@ -100,10 +100,10 @@ async def create_case(
         document_content = document_content.strip()
     supporting_document_content = []
     for idx, supporting_doc_url in enumerate(supporting_documents_urls):
-        document_content = process_upload_document(document_url)
-        if document_content is not None:
-            document_content = str(0+1) + ". " + document_content
-            supporting_document_content.append(document_content.strip())
+        supporting_doc_content = process_upload_document(document_url)
+        if supporting_doc_content is not None:
+            supporting_doc_content = str(0+1) + ". " + supporting_doc_content
+            supporting_document_content.append(supporting_doc_content.strip())
     try:
         client = config.llm
         chain = LLMChain(
