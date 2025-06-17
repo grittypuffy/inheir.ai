@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any
+import json
 import os
+import logging
 from openai import AzureOpenAI
 from ..config import AppConfig
 
-router = APIRouter(prefix="/gis", tags=["GIS Analysis"])
+router = APIRouter(tags=["GIS Analysis"])
 
 config:AppConfig = AppConfig()
 
@@ -48,7 +50,7 @@ async def analyze_location(request: LocationRequest) -> Dict[str, Any]:
         - environmental_hazards (0-1, where 1 is highest risk)
         - economic_growth_potential (0-1, where 1 is highest potential)
         
-        Return ONLY the JSON object, no additional text."""
+        Return ONLY the JSON object, without any explanation or formatting. No surrounding text, no markdown."""
 
         response = client.chat.completions.create(
             model=config.env.azure_openai_deployment,
@@ -59,12 +61,11 @@ async def analyze_location(request: LocationRequest) -> Dict[str, Any]:
             temperature=0.7,
             max_tokens=500
         )
-
+        logging.info(response)
         # Extract the JSON response from the model's output
         analysis_result = response.choices[0].message.content
-        
+        print(analysis_result)
         # Parse the JSON string into a dictionary
-        import json
         result_dict = json.loads(analysis_result)
         
         return result_dict

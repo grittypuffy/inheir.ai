@@ -144,12 +144,14 @@ async def sign_out(response: Response):
     try:
         response.delete_cookie(
             "token",
-            domain=config.env.cookie_domain,
+            # domain=config.env.cookie_domain,
             secure=True,
             httponly=True,
             samesite="none"
         )
-    
+        response.status_code = 200
+        return {"status": "success", "message": "Logged out successfully"}
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
