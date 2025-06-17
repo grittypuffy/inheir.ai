@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import JSONResponse
 from ..config import AppConfig, get_config
-from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse
+from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse, Case
 from typing import Optional, List
 from ..services.rag import process_upload_document
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
@@ -163,3 +163,83 @@ async def get_cases(req: Request):
             }
         )
         
+@router.get("/{case_id}", response_model=Case)
+async def get_summary(req: Request, case_id: str):
+    user_id = req.state.user.get("user_id")
+    if not user_id:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "failed",
+                "success": False,
+                "reason": "Please sign in."
+            }
+        )
+    else:
+        case_details_collection = config.db["case_details"]
+        case_summary_collection = config.db['case_summary']
+        case_doc = await case_details_collection.find_one(
+            {"user_id": user_id, "case_id": case_id},
+            {"title": 1, "status": 1, "created_at": 1}
+        )
+        case_doc["created_at"] = str(case_doc["created_at"])
+        case_summary_doc = await case_summary_collection.find_one(
+            {"case_id": case_id}
+        )
+        case_summary_doc.pop("_id")
+        case_meta_dict = CaseResponse(**case_doc)
+        case_summary_dict = CaseSummary(**case_summary_doc)
+        case_dict = {
+            "meta": case_meta_dict,
+            "summary": case_summary_dict           
+        }
+        case_response = Case(**case_dict)
+        return JSONResponse(
+            status_code=200,
+            content=case_response
+        )
+
+@router.get("/{case_id}/resolve", response_model=Case)
+async def resolve_case(req: Request, case_id: str):
+    user_id = req.state.user.get("user_id")
+    if not user_id:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "failed",
+                "success": False,
+                "reason": "Please sign in."
+            }
+        )
+    else:
+        case_details_collection = config.db["case_details"]
+        case_doc = await case_details_collection.find_one_and_update(
+            {"user_id": user_id, "case_id": case_id},
+            { "$set": { "status": "Resolved" } }
+        )
+        return JSONResponse(
+            status_code=200
+        )
+
+
+@router.get("/{case_id}/abort", response_model=Case)
+async def abort_case(req: Request, case_id: str):
+    user_id = req.state.user.get("user_id")
+    if not user_id:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "failed",
+                "success": False,
+                "reason": "Please sign in."
+            }
+        )
+    else:
+        case_details_collection = config.db["case_details"]
+        case_doc = await case_details_collection.find_one_and_update(
+            {"user_id": user_id, "case_id": case_id},
+            { "$set": { "status": "Abort" } }
+        )
+        return JSONResponse(
+            status_code=200
+        )
