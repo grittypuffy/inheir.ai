@@ -2,7 +2,7 @@
 import AppContainer from "@/lib/components/AppContainer";
 import { protect, signOut } from "@/lib/utils";
 import { Button, Toast, Toaster, ToastIntent, ToastPosition, ToastTitle, useId, useToastController } from "@fluentui/react-components";
-import { setTimeout } from "node:timers";
+import { setTimeout } from "timers";
 
 const Dashboard = () => {
   const toasterId = useId("toaster-id")
