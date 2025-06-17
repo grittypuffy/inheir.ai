@@ -5,8 +5,8 @@ import { SignUpData } from "@/lib/validators/types";
 import type { InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
 import { Button, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
-import { setTimeout } from "timers";
 import React, { useEffect, useState } from "react";
+import { setTimeout } from "timers";
 import * as v from "valibot";
 
 
@@ -157,7 +157,13 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign Up Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign Up Successful", description: "Redirecting..." }, "success");
-          setTimeout(signIn, 300);
+          setTimeout(() => {
+            signIn([
+              { key: "username", value: formData.username },
+              { key: "full_name", value: formData.full_name },
+              { key: "email", value: formData.email },
+            ]);
+          }, 400);
         }
         setIsLoading(false);
         return;
@@ -189,7 +195,13 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign In Successful", description: "Redirecting..." }, "success");
-          setTimeout(signIn, 300);
+          setTimeout(() => {
+            signIn([
+              { key: "username", value: formData.username },
+              { key: "full_name", value: formData.full_name },
+              { key: "email", value: formData.email },
+            ]);
+          }, 400);
         }
         setIsLoading(false);
         return;
