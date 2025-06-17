@@ -1,8 +1,8 @@
 "use client"
-import { isSignedIn, redirectIfSignedIn, signIn } from "@/lib/utils";
+import { isSignedIn, signIn } from "@/lib/utils";
 import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
 import { SignUpData } from "@/lib/validators/types";
-import type { InputOnChangeData, SelectTabData, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
+import type { InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
 import { Button, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
 import { setTimeout } from "node:timers";
@@ -92,7 +92,7 @@ const AuthForm = () => {
       });
   }
 
-  const onTabHandler = (_: SelectTabData, data: SelectTabData) => {
+  const onTabHandler = (_: SelectTabEvent, data: SelectTabData) => {
     setFormType(data.value);
     resetFormData();
     resetValidMsg();
@@ -157,9 +157,10 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign Up Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign Up Successful", description: "Redirecting..." }, "success");
-          setTimeout(() => signIn(), 300);
+          setTimeout(signIn, 300);
         }
         setIsLoading(false);
+        return;
       }
       setIsLoading(false);
       ToastMessage({ message: "Sign Up Failed", description: "Improper data! Please follow the format specified" }, "error");
@@ -187,9 +188,10 @@ const AuthForm = () => {
           ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
         } else {
           ToastMessage({ message: "Sign In Successful", description: "Redirecting..." }, "success");
-          setTimeout(() => signIn(), 300);
+          setTimeout(signIn, 300);
         }
         setIsLoading(false);
+        return;
       }
       setIsLoading(false);
       ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
@@ -226,7 +228,7 @@ const AuthForm = () => {
 
   useEffect(() => {
     if (isSignedIn()) {
-      redirectIfSignedIn();
+      signIn();
     }
     if (focusState) {
       validateFormData();
