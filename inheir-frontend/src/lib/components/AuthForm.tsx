@@ -130,7 +130,12 @@ const AuthForm = () => {
         }
       });
     }
-    setValidMsg(newValidMsg)
+    setValidMsg((prev) => ({
+      username: !isValidUserName ? newValidMsg.username : prev.username,
+      email: newValidMsg.email,
+      password: newValidMsg.password,
+      full_name: newValidMsg.full_name,
+    }))
     return res.success;
   }
 
@@ -197,7 +202,7 @@ const AuthForm = () => {
       setTimeout(() => {
         setIsValidUserName(false);
         setIsChecking(false);
-      }, 500);
+      }, 300);
     } else {
       setTimeout(async () => {
         const res: Response = await fetch(`/api/v1/auth/${formData.username}/valid`, {
