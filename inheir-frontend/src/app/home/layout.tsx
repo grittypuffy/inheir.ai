@@ -63,7 +63,7 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
     <AppContainer>
       <Toaster toasterId={toasterId} />
       <div className="flex flex-col lg:flex-row border w-full min-h-screen">
-        <div className="w-full lg:w-1/32 bg-gray-300 flex items-center justify-center">
+        <div className="w-full lg:w-1/32 border-b-2 lg:border-b-0 lg:border-r-2 bg-gray-300 flex items-center justify-center">
           <Hamburger
             size="large"
             onClick={() => setNavBar(!isNavBar)}

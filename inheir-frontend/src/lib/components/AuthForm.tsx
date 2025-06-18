@@ -203,8 +203,6 @@ const AuthForm = () => {
           setTimeout(() => {
             setItems([
               { key: "username", value: formData.username },
-              { key: "full_name", value: formData.full_name },
-              { key: "email", value: formData.email },
             ]);
             router.push("/dashboard");
           }, 400);
