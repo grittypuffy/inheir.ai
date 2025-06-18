@@ -238,7 +238,7 @@ async def abort_case(req: Request, case_id: str):
         case_details_collection = config.db["case_details"]
         case_doc = await case_details_collection.find_one_and_update(
             {"user_id": user_id, "case_id": case_id},
-            { "$set": { "status": "Abort" } }
+            { "$set": { "status": "Aborted" } }
         )
         return JSONResponse(
             status_code=200

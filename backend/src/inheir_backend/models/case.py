@@ -21,12 +21,13 @@ class CaseDetails(BaseModel):
         allow_population_by_field_name = True
 
 class CaseResponse(BaseModel):
+    case_id: str
     title: str
     status: str
     created_at: str
 
 class CaseMetaResponse(BaseModel):
-    cases: CaseResponse
+    cases: List[CaseResponse]
     status: str = "success"
     success: str = True
     reason: Optional[str] = None
