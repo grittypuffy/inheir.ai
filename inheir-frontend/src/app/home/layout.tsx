@@ -69,61 +69,59 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
             onClick={() => setNavBar(!isNavBar)}
           />
         </div>
-        <div className="flex flex-1 border">
-          <NavDrawer
-            open={isNavBar}
+        <NavDrawer
+          open={isNavBar}
+        >
+          <NavDrawerHeader
+            className="border-b-2 border-r-2"
           >
-            <NavDrawerHeader
-              className="border-b-2 border-r-2"
-            >
-              <div className="flex flex-col my-5 gap-y-3 flex-nowrap">
-                <div>
-                  <Hamburger
-                    size="medium"
-                    appearance="primary"
-                    shape="circular"
-                    onClick={() => setNavBar(!isNavBar)}
-                  />
-                </div>
-                <div>
-                  <h1 className="text-lg lg:text-2xl font-semibold">Welcome to Inheir.ai</h1>
-                  <span className="text-md lg:text-xl">{userName}</span>
-                </div>
-                <div onClick={logoutHandler}>
-                  <span className="text-sm lg:text-lg text-red-400 hover:text-red-600 cursor-pointer">
-                    Logout <ArrowExit20Regular />
-                  </span>
-                </div>
+            <div className="flex flex-col my-5 gap-y-3 flex-nowrap">
+              <div>
+                <Hamburger
+                  size="medium"
+                  appearance="primary"
+                  shape="circular"
+                  onClick={() => setNavBar(!isNavBar)}
+                />
               </div>
-            </NavDrawerHeader>
-            <NavDrawerBody
-              className="border-r-2"
-            >
-              <NavSectionHeader>
-                <span className="text-lg lg:text-xl font-semibold">Cases</span>
-              </NavSectionHeader>
-              <Cases />
-            </NavDrawerBody>
-            <NavDrawerFooter
-              className="border-t-2 border-r-2"
-            >
-              <div className="flex flex-col gap-y-2 m-3">
-                <span className="text-sm lg:text-md text-gray-500">Version 1.0.0</span>
-                <span className="text-sm lg:text-md text-gray-500">Copyright © 2025 Inheir.ai. All rights reserved.</span>
+              <div>
+                <h1 className="text-lg lg:text-2xl font-semibold">Welcome to Inheir.ai</h1>
+                <span className="text-md lg:text-xl">{userName}</span>
               </div>
-            </NavDrawerFooter>
-          </NavDrawer>
-          <div className="flex flex-col w-full h-full">
-            {isPageLoading ? (
-              <div className="flex items-center justify-center min-h-screen">
-                <h1 className="text-lg font-bold">Loading...</h1>
+              <div onClick={logoutHandler}>
+                <span className="text-sm lg:text-lg text-red-400 hover:text-red-600 cursor-pointer">
+                  Logout <ArrowExit20Regular />
+                </span>
               </div>
-            ) : (
-              <div className="flex flex-col w-full h-full">
-                {children}
-              </div>
-            )}
-          </div>
+            </div>
+          </NavDrawerHeader>
+          <NavDrawerBody
+            className="border-r-2"
+          >
+            <NavSectionHeader>
+              <span className="text-lg lg:text-xl font-semibold">Cases</span>
+            </NavSectionHeader>
+            <Cases />
+          </NavDrawerBody>
+          <NavDrawerFooter
+            className="border-t-2 border-r-2"
+          >
+            <div className="flex flex-col gap-y-2 m-3">
+              <span className="text-sm lg:text-md text-gray-500">Version 1.0.0</span>
+              <span className="text-sm lg:text-md text-gray-500">Copyright © 2025 Inheir.ai. All rights reserved.</span>
+            </div>
+          </NavDrawerFooter>
+        </NavDrawer>
+        <div className="flex flex-col w-full h-screen">
+          {isPageLoading ? (
+            <div className="flex items-center justify-center min-h-screen">
+              <h1 className="text-lg font-bold">Loading...</h1>
+            </div>
+          ) : (
+            <>
+              {children}
+            </>
+          )}
         </div>
       </div>
     </AppContainer>
