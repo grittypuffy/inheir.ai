@@ -116,7 +116,7 @@ async def sign_in(payload: SignInRequest, response: Response):
                     "message": "Username or password does not match",
                 },
             )
-        payload = sign_jwt(str(user.get("_id")), payload.username)
+        payload = sign_jwt(str(user.get("_id")), payload.username, user.get("role"))
         response.set_cookie(
             key="token",
             value=payload[0],

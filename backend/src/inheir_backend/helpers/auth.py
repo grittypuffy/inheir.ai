@@ -13,6 +13,7 @@ class JwtPayload(BaseModel):
     user_id: str
     username: str
     expires: int
+    role: str = "User"
 
 
 def get_hashed_password(password: str) -> str:
@@ -23,10 +24,10 @@ def verify_password(password: str, hashed_pass: str) -> bool:
     return bcrypt.verify(password, hashed_pass)
 
 
-def sign_jwt(user_id: str, username: str):
+def sign_jwt(user_id: str, username: str, role: str):
     try:
         payload = JwtPayload(
-            user_id=user_id, username=username, expires=int(time.time() + 3600)
+            user_id=user_id, username=username, expires=int(time.time() + 3600), role=role
         )
         token = jwt.encode(
             payload.dict(), config.env.jwt_secret, algorithm="HS512")

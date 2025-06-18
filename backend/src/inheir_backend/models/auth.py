@@ -7,6 +7,7 @@ class SignUpRequest(BaseModel):
     full_name: str
     email: EmailStr
     password: str
+    role: str = "User"
 
     @field_validator('username')
     def validate_username(cls, value):
