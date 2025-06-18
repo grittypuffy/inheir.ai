@@ -2,8 +2,11 @@
 import AppContainer from "@/lib/components/AppContainer";
 import AuthForm from "@/lib/components/AuthForm";
 import { Card } from "@/lib/components/Card";
+import { isSignedIn } from "@/lib/utils";
 import { FeatureData } from "@/lib/validators/types";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const features: FeatureData[] = [
   {
@@ -33,6 +36,26 @@ const features: FeatureData[] = [
 ];
 
 export default function Default() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isSignedIn()) {
+      router.push("/dashboard");
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
+
+  if (isLoading) {
+    return (
+      <AppContainer>
+        <div className="flex items-center justify-center min-h-screen">
+          {/* Optional loading indicator */}
+        </div>
+      </AppContainer>
+    );
+  }
 
   return (
     <AppContainer>

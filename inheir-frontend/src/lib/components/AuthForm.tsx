@@ -1,16 +1,18 @@
 "use client"
-import { isSignedIn, signIn } from "@/lib/utils";
+import { setItems } from "@/lib/utils";
 import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
 import { SignUpData } from "@/lib/validators/types";
 import type { CheckboxOnChangeData, InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
 import { Button, Checkbox, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { setTimeout } from "timers";
 import * as v from "valibot";
 
 
 const AuthForm = () => {
+  const router = useRouter()
   const [formType, setFormType] = useState<TabValue>('signup');
   const [formData, setFormData] = useState<SignUpData>({
     username: "",
@@ -160,11 +162,12 @@ const AuthForm = () => {
         } else {
           ToastMessage({ message: "Sign Up Successful", description: "Redirecting..." }, "success");
           setTimeout(() => {
-            signIn([
+            setItems([
               { key: "username", value: formData.username },
               { key: "full_name", value: formData.full_name },
               { key: "email", value: formData.email },
             ]);
+            router.push("/dashboard");
           }, 400);
         }
         setIsLoading(false);
@@ -198,11 +201,12 @@ const AuthForm = () => {
         } else {
           ToastMessage({ message: "Sign In Successful", description: "Redirecting..." }, "success");
           setTimeout(() => {
-            signIn([
+            setItems([
               { key: "username", value: formData.username },
               { key: "full_name", value: formData.full_name },
               { key: "email", value: formData.email },
             ]);
+            router.push("/dashboard");
           }, 400);
         }
         setIsLoading(false);
@@ -242,9 +246,6 @@ const AuthForm = () => {
   }
 
   useEffect(() => {
-    if (isSignedIn()) {
-      signIn();
-    }
     if (focusState) {
       validateFormData();
     }

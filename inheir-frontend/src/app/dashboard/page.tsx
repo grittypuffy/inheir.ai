@@ -1,14 +1,16 @@
 "use client"
+
 import AppContainer from "@/lib/components/AppContainer";
 import { Cases } from "@/lib/components/Cases";
-import { getItem, isSignedOut, signOut } from "@/lib/utils";
+import { clearItems, getItem, isSignedOut } from "@/lib/utils";
 import { Hamburger, NavDrawer, NavDrawerBody, NavDrawerFooter, NavDrawerHeader, NavSectionHeader, Toast, Toaster, ToastIntent, ToastPosition, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { ArrowExit20Regular } from "@fluentui/react-icons";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { setTimeout } from "node:timers";
 import { useEffect, useState } from "react";
 
 const Dashboard = () => {
+  const router = useRouter()
   const toasterId = useId("toaster-id")
   const { dispatchToast } = useToastController(toasterId)
   const ToastMessage = (message: string, intent: ToastIntent = "success", position: ToastPosition = "bottom-end") => {
@@ -36,43 +38,61 @@ const Dashboard = () => {
     })
     ToastMessage("Logging out successfully!",)
     if (res.ok) {
-      setTimeout(signOut, 300)
+      setTimeout(() => {
+        clearItems();
+        router.push("/");
+      }, 300)
     }
   }
 
   const [isNavBar, setNavBar] = useState<boolean>(false);
 
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
   useEffect(() => {
     if (isSignedOut()) {
-      redirect("/");
+      router.push("/");
+    } else {
+      setIsPageLoading(false);
     }
+
     if (getItem("username")) {
       setUserName(getItem("username") || "User");
     }
   }, [])
 
+  if (isPageLoading) {
+    return (
+      <AppContainer>
+        <div className="flex items-center justify-center min-h-screen">
+          <h1 className="text-lg lg:text-xl font-bold">Loading...</h1>
+        </div>
+      </AppContainer>
+    );
+  }
+
   return (
     <AppContainer>
       <Toaster toasterId={toasterId} />
-      <div className="flex flex-row border w-full min-h-screen">
+      <div className="flex flex-col lg:flex-row border w-full min-h-screen">
         <div className="flex flex-col justify-items-start">
           <Hamburger
             size="large"
             onClick={() => setNavBar(!isNavBar)}
           />
         </div>
-        <div className="flex flex-1 border bg-gray-400">
+        <div className="flex flex-1 border">
           <NavDrawer
             open={isNavBar}
           >
             <NavDrawerHeader
-              className="border-b-4 border-r-4 border-dotted"
+              className="border-b-2 border-r-2"
             >
               <div className="flex flex-col my-5 gap-y-3 flex-nowrap">
                 <div>
                   <Hamburger
                     size="medium"
-                    appearance="outline"
+                    appearance="primary"
+                    shape="circular"
                     onClick={() => setNavBar(!isNavBar)}
                   />
                 </div>
@@ -88,7 +108,7 @@ const Dashboard = () => {
               </div>
             </NavDrawerHeader>
             <NavDrawerBody
-              className="border-r-4 border-dotted"
+              className="border-r-2"
             >
               <NavSectionHeader>
                 <span className="text-lg lg:text-xl font-semibold">Cases</span>
@@ -96,7 +116,7 @@ const Dashboard = () => {
               <Cases />
             </NavDrawerBody>
             <NavDrawerFooter
-              className="border-t-4 border-r-4 border-dotted"
+              className="border-t-2 border-r-2"
             >
               <div className="flex flex-col gap-y-2 m-3">
                 <span className="text-sm lg:text-md text-gray-500">Version 1.0.0</span>
@@ -111,5 +131,7 @@ const Dashboard = () => {
 }
 
 export default function Page() {
-  return Dashboard();
+  return (
+    <Dashboard />
+  );
 }

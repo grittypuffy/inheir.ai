@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 export const isSignedIn = (): boolean => {
   if (typeof window === "undefined") return false;
 
@@ -11,7 +9,7 @@ export const isSignedOut = (): boolean => {
   return !isSignedIn();
 }
 
-export const signIn = (items?: Array<{ key: string, value: string }>) => {
+export const setItems = (items?: Array<{ key: string, value: string }>) => {
   if (typeof window === "undefined") return;
 
   localStorage.setItem("status", "in");
@@ -20,26 +18,16 @@ export const signIn = (items?: Array<{ key: string, value: string }>) => {
       localStorage.setItem(item.key, item.value);
     });
   }
-
-  redirect("/dashboard");
 }
 
-export const signOut = () => {
+export const clearItems = () => {
   if (typeof window === "undefined") return;
 
   localStorage.clear();
-  redirect("/");
 }
 
 export const getItem = (key: string): string | null => {
   if (typeof window === "undefined") return null;
 
   return localStorage.getItem(key);
-}
-
-export const protect = (fn: Function) => {
-  if (isSignedIn()) {
-    return fn();
-  }
-  redirect("/");
 }
