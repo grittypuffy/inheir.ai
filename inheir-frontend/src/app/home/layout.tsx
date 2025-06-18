@@ -6,10 +6,9 @@ import { clearItems, getItem, isSignedOut } from "@/lib/utils";
 import { Hamburger, NavDrawer, NavDrawerBody, NavDrawerFooter, NavDrawerHeader, NavSectionHeader, Toast, Toaster, ToastIntent, ToastPosition, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { ArrowExit20Regular } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
-import { setTimeout } from "node:timers";
 import { useEffect, useState } from "react";
-
-const Dashboard = () => {
+import { setTimeout } from "timers";
+const Dashboard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const toasterId = useId("toaster-id")
   const { dispatchToast } = useToastController(toasterId)
@@ -60,21 +59,11 @@ const Dashboard = () => {
     }
   }, [])
 
-  if (isPageLoading) {
-    return (
-      <AppContainer>
-        <div className="flex items-center justify-center min-h-screen">
-          <h1 className="text-lg lg:text-xl font-bold">Loading...</h1>
-        </div>
-      </AppContainer>
-    );
-  }
-
   return (
     <AppContainer>
       <Toaster toasterId={toasterId} />
       <div className="flex flex-col lg:flex-row border w-full min-h-screen">
-        <div className="flex flex-col justify-items-start">
+        <div className="w-full lg:w-1/32 bg-gray-300 flex items-center justify-center">
           <Hamburger
             size="large"
             onClick={() => setNavBar(!isNavBar)}
@@ -124,14 +113,27 @@ const Dashboard = () => {
               </div>
             </NavDrawerFooter>
           </NavDrawer>
+          <div className="flex flex-col w-full h-full">
+            {isPageLoading ? (
+              <div className="flex items-center justify-center min-h-screen">
+                <h1 className="text-lg font-bold">Loading...</h1>
+              </div>
+            ) : (
+              <div className="flex flex-col w-full h-full">
+                {children}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </AppContainer>
   );
 }
 
-export default function Page() {
+export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <Dashboard />
+    <Dashboard>
+      {children}
+    </Dashboard>
   );
 }
