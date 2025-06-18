@@ -13,7 +13,7 @@ from ..models.auth import SignInRequest, SignUpRequest, Token
 from ..helpers.auth import get_hashed_password, verify_password, sign_jwt, decode_jwt
 
 
-router = APIRouter()
+router = APIRouter(tags=["Authentication"])
 
 config: AppConfig = get_config()
 
@@ -116,7 +116,7 @@ async def sign_in(payload: SignInRequest, response: Response):
                     "message": "Username or password does not match",
                 },
             )
-        payload = sign_jwt(str(user.get("_id")), payload.username)
+        payload = sign_jwt(str(user.get("_id")), payload.username, user.get("role"))
         response.set_cookie(
             key="token",
             value=payload[0],
@@ -144,12 +144,14 @@ async def sign_out(response: Response):
     try:
         response.delete_cookie(
             "token",
-            domain=config.env.cookie_domain,
+            # domain=config.env.cookie_domain,
             secure=True,
             httponly=True,
             samesite="none"
         )
-    
+        response.status_code = 200
+        return {"status": "success", "message": "Logged out successfully"}
+
     except Exception as e:
         return JSONResponse(
             status_code=500,

@@ -7,7 +7,7 @@ from azure.storage.blob import BlobClient
 config: AppConfig = get_config()
 
 
-def upload_user_file(file: UploadFile, user_id: str, case_id: str | None, chat_id: str | None):
+async def upload_user_file(file: UploadFile, user_id: str, case_id: str | None, chat_id: str | None, case: bool = True):
     """
     Accept File uploaded from FastAPI endpoint
     """
@@ -36,7 +36,7 @@ def upload_user_file(file: UploadFile, user_id: str, case_id: str | None, chat_i
     return {"status": "success", "url": f"{config.env.uploads_endpoint}{hashed_filename}"}
 
 
-def upload_knowledge_base_file(file: UploadFile):
+async def upload_knowledge_base_file(file: UploadFile):
     """
     Upload file to knowledge base from FastAPI endpoint
     """
