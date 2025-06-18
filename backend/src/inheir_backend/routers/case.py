@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import JSONResponse
 from ..config import AppConfig, get_config
-from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse, Case
+from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse, Case, Remarks
 from typing import Optional, List
 from ..services.rag import process_upload_document
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
@@ -13,6 +13,7 @@ from ..helpers.serializer import serializer
 router = APIRouter(tags=["Case Analysis"])
 
 config: AppConfig = get_config()
+
 
 case_summary_system_template = """You are a legal assistant specialized in property and title resolution."""
 case_summary_user_template = """\
@@ -199,8 +200,8 @@ async def get_summary(req: Request, case_id: str):
             content=case_response
         )
 
-@router.get("/{case_id}/resolve", response_model=Case)
-async def resolve_case(req: Request, case_id: str):
+@router.post("/{case_id}/resolve")
+async def resolve_case(req: Request, case_id: str, remarks: Remarks):
     user_id = req.state.user.get("user_id")
     if not user_id:
         return JSONResponse(
@@ -217,13 +218,20 @@ async def resolve_case(req: Request, case_id: str):
             {"user_id": user_id, "case_id": case_id},
             { "$set": { "status": "Resolved" } }
         )
+
+        case_summary_collection = config.db['case_summary']
+        case_summary_doc = await case_summary_collection.find_one_and_update(
+            {"case_id": case_id},
+            {"$set": {"remarks": remarks}}
+        )
+
         return JSONResponse(
             status_code=200
         )
 
 
-@router.get("/{case_id}/abort", response_model=Case)
-async def abort_case(req: Request, case_id: str):
+@router.post("/{case_id}/abort")
+async def abort_case(req: Request, case_id: str, remarks: Remarks):
     user_id = req.state.user.get("user_id")
     if not user_id:
         return JSONResponse(
@@ -240,6 +248,12 @@ async def abort_case(req: Request, case_id: str):
             {"user_id": user_id, "case_id": case_id},
             { "$set": { "status": "Aborted" } }
         )
+        case_summary_collection = config.db['case_summary']
+        case_summary_doc = await case_summary_collection.find_one_and_update(
+            {"case_id": case_id},
+            {"$set": {"remarks": remarks}}
+        )
+
         return JSONResponse(
             status_code=200
         )

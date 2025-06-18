@@ -56,7 +56,12 @@ class CaseSummary(BaseModel):
     summary: str
     recommendations: List[str]
     references: Optional[List[str]]
+    remarks: Optional[str]
+
 
 class Case(BaseModel):
     meta: CaseResponse
     summary: CaseSummary
+
+class Remarks(BaseModel):
+    remarks: Optional[str] = None
