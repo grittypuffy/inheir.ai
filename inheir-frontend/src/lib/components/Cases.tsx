@@ -6,7 +6,7 @@ export const Cases = () => {
   const [cases, setCases] = useState<any[]>([]);
 
   const getCases = async () => {
-    const res: Response = await fetch('/api/v1/case', {
+    const res: Response = await fetch('/api/v1/case/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
