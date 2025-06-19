@@ -49,6 +49,7 @@ class EnvVarConfig(BaseSettings):
     # Anonymous usage
     anonymous_user_id: str
 
+    opencage_api_key: str
 
     class EnvVarConfig:
         env_file = ".env"
