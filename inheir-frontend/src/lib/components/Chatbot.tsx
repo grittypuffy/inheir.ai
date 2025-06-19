@@ -39,15 +39,16 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
     setChatHistory(prev => [...prev, userChat]);
     setIsFetching(true);
 
+    const form = new FormData();
+    form.append("case_id", caseId);
+    form.append("query", userChat.content);
+
     const res: Response = await fetch('/api/v1/chatbot/chat', {
       method: "POST",
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Accept": "application/json",
       },
-      body: JSON.stringify({
-        case_id: caseId,
-        query: userChat.content,
-      }),
+      body: form,
       credentials: "include",
     });
 
