@@ -46,17 +46,19 @@ class Asset(BaseModel):
 
 class CaseSummary(BaseModel):
     case_id: str
-    valid: bool
-    legitimate: bool
-    case_type: str
+    valid: bool = False
+    legitimate: bool = False
+    case_type: str = "Dispute"
     entity: Optional[List[Entity]]
     asset: Optional[List[Asset]]
     document: str
     supporting_documents: Optional[List[str]]
-    summary: str
-    recommendations: List[str]
+    document_content: str
+    supporting_document_content: str
+    summary: str = ""
+    recommendations: List[str] = [""]
     references: Optional[List[str]]
-    remarks: Optional[str]
+    remarks: Optional[str] = None
 
 
 class Case(BaseModel):

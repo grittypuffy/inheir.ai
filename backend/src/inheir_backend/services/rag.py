@@ -35,7 +35,7 @@ def process_upload_document(file_path: str):
     # Process the document using Azure Document Intelligence (Form Recognizer)
     try:
         if content_type in ["application/pdf", "image/png", "image/jpeg"]:
-            poller = config.document_intelligence.begin_analyze_document_from_url(
+            poller = config.document_analysis_client.begin_analyze_document_from_url(
                 "prebuilt-layout", file_path)
             result = poller.result()
 
@@ -78,7 +78,7 @@ def process_document(file_path: str):
     # Process the document using Azure Document Intelligence (Form Recognizer)
     try:
         if content_type in ["application/pdf", "image/png", "image/jpeg"]:
-            poller = config.document_intelligence.begin_analyze_document_from_url(
+            poller = config.document_analysis_client.begin_analyze_document_from_url(
                 "prebuilt-layout", file_path)
             result = poller.result()
 

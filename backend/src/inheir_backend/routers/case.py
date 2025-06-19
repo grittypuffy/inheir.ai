@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import JSONResponse
@@ -10,6 +11,7 @@ from ..services.storage import upload_user_file, upload_knowledge_base_file
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.chains.llm import LLMChain
 from ..helpers.serializer import serializer
+from fastapi import HTTPException
 
 router = APIRouter(tags=["Case Analysis"])
 
@@ -18,37 +20,37 @@ config: AppConfig = get_config()
 
 case_summary_system_template = """You are a legal assistant specialized in property and title resolution."""
 case_summary_user_template = """\
-Analyze the following legal document and supporting docs and return structured data in JSON
 ### Document:
-{{ document }}
+{{{{ document }}}}
 
 ### Supporting document:
-{{ supporting_documents }}
+{{{{ supporting_documents }}}}
 
-{
-  "valid": boolean,
-  "legitimate": boolean,
-  "case_type": string,
+{{{{
+  "valid": boolean, # should be only true or false
+  "legitimate": boolean, # should be only true or false
+  "case_type": string, # no null
   "entity": [
-    {
+    {{
       "name": string,
       "entity_type": "person" | "organization",
       "valid": boolean
-    }
+    }}
   ],
   "asset": [
-    {
+    {{
       "name": string,
       "location": string | null,
       "asset_type": string,
       "net_worth": string | null,
       "coordinates": string | null
-    }
+    }}
   ],
   "summary": string,
   "recommendations": [ string ],
   "references": [ string ]
-}
+}}}}
+
 Guidelines:
 - Use plain English.
 - Use null if information is missing.
@@ -69,6 +71,7 @@ async def create_case(
     title: Optional[str] = "",
     address: Optional[str] = ""
 ):
+    logging.info(req.state.user)
     user_id = config.env.anonymous_user_id
     if req.state.user:
         user_id = req.state.user.get("user_id")
@@ -104,7 +107,7 @@ async def create_case(
         document_content = document_content.strip()
     supporting_document_content = []
     for idx, supporting_doc_url in enumerate(supporting_documents_urls):
-        supporting_doc_content = process_upload_document(document_url)
+        supporting_doc_content = process_upload_document(supporting_document_url)
         if supporting_doc_content is not None:
             supporting_doc_content = str(0+1) + ". " + supporting_doc_content
             supporting_document_content.append(supporting_doc_content.strip())
@@ -120,17 +123,35 @@ async def create_case(
             "supporting_documents": "\n".join(supporting_document_content)
         }
         response = chain.invoke(chain_info)
-        result = json.loads(response)
-        result["case_id"] = case_id
+        logging.info(response)
+        case_summ_dict = json.loads(response.pop("text"))
+        case_summ_dict["case_id"] = case_id
+        case_summ_dict["document_content"] = response.pop("document")
+        case_summ_dict["supporting_document_content"] = response.pop("supporting_documents")
+        case_summ_dict["document"] = document_url
+        case_summ_dict["supporting_documents"] = supporting_documents_urls
 
-        case_summary = CaseSummary(**result)
-        case_summary_id = await case_summary_collection.insert_one(case_details.dict())
+        if valid := case_summ_dict.get("valid") is None:
+            case_summ_dict["valid"] = False
+        if legitimate := case_summ_dict.get("legitimate") is None:
+            case_summ_dict["legitimate"] = False
+        
+        if summary := case_summ_dict.get("summary") is None:
+            case_summ_dict["summary"] = "No summary generated"
+
+        if case_type := case_summ_dict.get("case_type") is None:
+            case_summ_dict["case_type"] = "Dispute"
+        
+
+        case_summary = CaseSummary(**case_summ_dict)
+        case_summary_id = await case_summary_collection.insert_one(case_summ_dict)
         return JSONResponse(
             status_code=200,
             content=case_summary.dict()
         )
 
     except Exception as e:
+        logging.error(e)
         raise HTTPException(status_code=500, detail=f"Error analyzing location: {str(e)}") 
 
 
