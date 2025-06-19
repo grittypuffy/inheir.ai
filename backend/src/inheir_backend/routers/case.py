@@ -4,7 +4,9 @@ from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import JSONResponse
 from ..config import AppConfig, get_config
-from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse, Case, Remarks
+from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse
+from ..models.case import CaseResponse, Case, Remarks, ChatMetaResponse
+from ..models.chat import Chat, ChatData
 from typing import Optional, List
 from ..services.rag import process_upload_document
 from ..services.storage import upload_user_file, upload_knowledge_base_file
@@ -168,31 +170,29 @@ async def get_cases(req: Request):
                 "reason": "Please sign in."
             }
         )
-    else:
-        case_details_collection = config.db["case_details"]
-        cursor = case_details_collection.find(
-            {"user_id": user_id},
-            {"_id": 1, "title": 1, "status": 1, "created_at": 1}
-        ).sort("created_at", -1)
-        cases = []
-        async for doc in cursor:
-            doc["_id"] = doc["_id"].__str__()
-            doc["case_id"] = doc["_id"]
-            doc["created_at"] = doc["created_at"].__str__()
-            doc.pop("_id", None)
-            cases.append(CaseResponse(**doc)) 
-        cases_dict = {"cases": cases}
-        case_response = CaseMetaResponse(**cases_dict)
-        return JSONResponse(
-            status_code=200,
-            content={
-                "cases": case_response.model_dump(),
-            }
-        )
+    case_details_collection = config.db["case_details"]
+    cursor = case_details_collection.find(
+        {"user_id": user_id},
+        {"_id": 1, "title": 1, "status": 1, "created_at": 1}
+    ).sort("created_at", -1)
+    cases = []
+    async for doc in cursor:
+        doc["_id"] = doc["_id"].__str__()
+        doc["case_id"] = doc["_id"]
+        doc["created_at"] = doc["created_at"].__str__()
+        doc.pop("_id", None)
+        cases.append(CaseResponse(**doc)) 
+    cases_dict = {"cases": cases}
+    case_response = CaseMetaResponse(**cases_dict)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "cases": case_response.model_dump(),
+        }
+    )
         
 @router.get("/{case_id}", response_model=Case)
 async def get_summary(req: Request, case_id: str):
-    logging.info(req.state.user)
     user_id = config.env.anonymous_user_id
     if req.state.user:
         user_id = req.state.user.get("user_id")
@@ -231,7 +231,9 @@ async def get_summary(req: Request, case_id: str):
 
 @router.post("/{case_id}/resolve")
 async def resolve_case(req: Request, case_id: str, remarks: Remarks):
-    user_id = req.state.user.get("user_id")
+    user_id = config.env.anonymous_user_id
+    if req.state.user:
+        user_id = req.state.user.get("user_id")
     if not user_id:
         return JSONResponse(
             status_code=401,
@@ -261,7 +263,9 @@ async def resolve_case(req: Request, case_id: str, remarks: Remarks):
 
 @router.post("/{case_id}/abort")
 async def abort_case(req: Request, case_id: str, remarks: Remarks):
-    user_id = req.state.user.get("user_id")
+    user_id = config.env.anonymous_user_id
+    if req.state.user:
+        user_id = req.state.user.get("user_id")
     if not user_id:
         return JSONResponse(
             status_code=401,
@@ -286,3 +290,38 @@ async def abort_case(req: Request, case_id: str, remarks: Remarks):
         return JSONResponse(
             status_code=200
         )
+
+@router.get("/{case_id}/chats")
+async def get_chats(req: Request, case_id: str):
+    if not req.state.user:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "status": "failed",
+                "success": False,
+                "reason": "Please sign in."
+            }
+        )
+    user_id = req.state.user.get("user_id")
+    case_details_collection = config.db["chat_history"]
+    cursor = case_details_collection.find(
+        {"user_id": user_id, "case_id": case_id}
+    )
+    chats = []
+    async for doc in cursor:
+        doc["_id"] = doc["_id"].__str__()
+        doc["chat_id"] = doc["_id"]
+        doc.pop("_id", None)
+        query = doc.pop("query")
+        doc["query"] = ChatData(**query)
+        response = doc.pop("response")
+        doc["response"] = ChatData(**response)
+        chats.append(Chat(**doc)) 
+    chats_dict = {"chats": chats}
+    chat_response = ChatMetaResponse(**chats_dict)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "chats": chat_response.model_dump(),
+        }
+    )

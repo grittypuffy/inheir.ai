@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from bson import ObjectId
 from typing import Optional, List
 from datetime import datetime
-
+from ..models.chat import Chat
 from ..config import AppConfig, get_config
 
 config: AppConfig = get_config()
@@ -20,11 +20,13 @@ class CaseDetails(BaseModel):
         }
         allow_population_by_field_name = True
 
+
 class CaseResponse(BaseModel):
     case_id: str
     title: str
     status: str
     created_at: str
+
 
 class CaseMetaResponse(BaseModel):
     cases: List[CaseResponse]
@@ -32,10 +34,19 @@ class CaseMetaResponse(BaseModel):
     success: str = True
     reason: Optional[str] = None
 
+
+class ChatMetaResponse(BaseModel):
+    chats: List[Chat]
+    status: str = "success"
+    success: str = True
+    reason: Optional[str] = None
+
+
 class Entity(BaseModel):
     name: str
     entity_type: str
     valid: bool
+
 
 class Asset(BaseModel):
     name: str
@@ -64,6 +75,7 @@ class CaseSummary(BaseModel):
 class Case(BaseModel):
     meta: CaseResponse
     summary: CaseSummary
+
 
 class Remarks(BaseModel):
     remarks: Optional[str] = None

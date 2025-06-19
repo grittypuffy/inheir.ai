@@ -19,7 +19,7 @@ class ChatbotRequest(BaseModel):
     query: str
     context: Optional[str] = None
 
-chatbot_system_template = """You are a helpful assistant that answers questions based on provided legal documents, provided legal and supporting documents with relevant law data, if no relevant data say so. Keep your responses concise and relevant."""
+chatbot_system_template = """You are a helpful assistant that answers a query based on provided legal documents, provided legal and supporting documents with relevant law data, if no relevant data say so. Keep your responses concise and relevant."""
 chatbot_user_template = """\
 ### Law:
 {{{{ law }}}}
@@ -30,6 +30,9 @@ chatbot_user_template = """\
 ### Supporting document:
 {{{{ supporting_documents }}}}
 
+### Query
+{{{{ query }}}}
+
 Guidelines:
 - Use plain English.
 """
@@ -39,10 +42,13 @@ chatbot_case_prompt_template = ChatPromptTemplate.from_messages([
     HumanMessagePromptTemplate.from_template(chatbot_user_template)
 ])
 
-chatbot_law_system_template = """You are a helpful assistant that answers questions based on provided law data, if no relevant data say so. Keep your responses concise and relevant."""
+chatbot_law_system_template = """You are a helpful assistant that answers a query based on provided law data, if no relevant data say so. Keep your responses concise and relevant."""
 chatbot_law_user_template = """\
 ### Law:
 {{{{ law }}}}
+
+### Query
+{{{{ query }}}}
 
 Guidelines:
 - Use plain English.
@@ -86,13 +92,15 @@ async def chat(
             chain_info = {
                 "law": search_result_content,
                 "document": "",
-                "supporting_documents": ""
+                "supporting_documents": "",
+                "query": query
             }
             if case_summary_doc is not None:
                 chain_info = {
                     "law": search_result_content,
                     "document": case_summary_doc.get("document_content") or "",
-                    "supporting_documents": case_summary_doc.get("supporting_document_content") or ""
+                    "supporting_documents": case_summary_doc.get("supporting_document_content") or "",
+                    "query": query
                 }
             response = chain.invoke(chain_info)
             chat_history_doc = {
@@ -118,7 +126,8 @@ async def chat(
                 prompt=chatbot_law_prompt_template
             )
             chain_info = {
-                "law": search_result_content
+                "law": search_result_content,
+                "query": query
             }
             response = chain.invoke(chain_info)
             chat_history_doc = {
