@@ -41,7 +41,7 @@ export default function Default() {
 
   useEffect(() => {
     if (isSignedIn()) {
-      router.push("/dashboard");
+      router.push("/home");
     } else {
       setIsLoading(false);
     }

@@ -167,7 +167,7 @@ const AuthForm = () => {
               { key: "full_name", value: formData.full_name },
               { key: "email", value: formData.email },
             ]);
-            router.push("/dashboard");
+            router.push("/home");
           }, 400);
         }
         setIsLoading(false);
@@ -204,7 +204,7 @@ const AuthForm = () => {
             setItems([
               { key: "username", value: formData.username },
             ]);
-            router.push("/dashboard");
+            router.push("/home");
           }, 400);
         }
         setIsLoading(false);
