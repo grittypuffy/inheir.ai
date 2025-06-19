@@ -6,6 +6,7 @@ from ..config import AppConfig, get_config
 from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse, CaseResponse, Case, Remarks
 from typing import Optional, List
 from ..services.rag import process_upload_document
+from ..services.storage import upload_user_file, upload_knowledge_base_file
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.chains.llm import LLMChain
 from ..helpers.serializer import serializer
