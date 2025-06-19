@@ -69,7 +69,9 @@ async def create_case(
     title: Optional[str] = "",
     address: Optional[str] = ""
 ):
-    user_id = req.state.user.get("user_id") or config.env.anonymous_user_id
+    user_id = config.env.anonymous_user_id
+    if req.state.user:
+        user_id = req.state.user.get("user_id")
     case_details_collection = config.db['case_details']
     case_summary_collection = config.db['case_summary']
     date = str(datetime.now())
@@ -134,7 +136,9 @@ async def create_case(
 
 @router.get("/", response_model=CaseMetaResponse)
 async def get_cases(req: Request):
-    user_id = req.state.user.get("user_id")
+    user_id = None
+    if req.state.user:
+        user_id = req.state.user.get("user_id")
     if not user_id:
         return JSONResponse(
             status_code=401,
