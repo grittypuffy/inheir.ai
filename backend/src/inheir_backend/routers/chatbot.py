@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, UploadFile
 from pydantic import BaseModel
 from typing import Optional, List
 import os
@@ -15,26 +15,26 @@ class ChatbotRequest(BaseModel):
 
 class ChatbotResponse(BaseModel):
     response: str
-    source: str  # "context" or "rag"
+    source: str
+    # Can be "context" or "rag"
 
 @router.post("/chat", response_model=ChatbotResponse)
-async def chat(request: ChatbotRequest):
+async def chat(
+    req: Request,
+    document: Optional[UploadFile],
+    query: str,
+    context: Optional[str] = None
+):
     try:
-        # Initialize Azure OpenAI client
-        client = AzureOpenAI(
-            api_key=config.env.azure_openai_api_key,
-            api_version=config.env.azure_openai_api_version,
-            azure_endpoint=config.env.azure_openai_endpoint
-        )
+        client = config.llm
 
-        if request.context:
-            # Context-aware response
+        if context:
             system_message = """You are a helpful assistant that answers questions based on the provided context. 
             If the answer cannot be found in the context, say so. Keep your responses concise and relevant."""
             
             messages = [
                 {"role": "system", "content": system_message},
-                {"role": "user", "content": f"Context: {request.context}\n\nQuestion: {request.query}"}
+                {"role": "user", "content": f"Context: {context}\n\nQuestion: {request.query}"}
             ]
 
             response = client.chat.completions.create(
@@ -49,9 +49,6 @@ async def chat(request: ChatbotRequest):
                 source="context"
             )
         else:
-            # RAG-based response
-            # This will be handled by your friend's RAG implementation
-            # For now, we'll return a placeholder
             return ChatbotResponse(
                 response="RAG-based response",
                 source="rag"

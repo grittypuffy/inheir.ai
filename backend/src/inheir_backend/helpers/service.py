@@ -3,8 +3,7 @@ from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from langchain_openai import AzureChatOpenAI
 from azure.search.documents import SearchClient
-from langchain_openai import AzureChatOpenAI
-
+from openai import AzureOpenAI
 
 
 def get_document_analysis_client(form_recognizer_endpoint: str, form_recognizer_key: str) -> DocumentAnalysisClient:
@@ -23,7 +22,7 @@ def get_storage_client(connection_string: str, container_name: str) -> Container
     return container_client
 
 
-def get_llm(openai_api_key: str, endpoint: str, deployment: str, api_version: str) -> AzureChatOpenAI:
+def get_langchain_llm(openai_api_key: str, endpoint: str, deployment: str, api_version: str) -> AzureChatOpenAI:
     llm = AzureChatOpenAI(
         openai_api_key=openai_api_key,
         azure_endpoint=endpoint,
@@ -35,6 +34,16 @@ def get_llm(openai_api_key: str, endpoint: str, deployment: str, api_version: st
         max_retries=2,
     )
     return llm
+
+
+def get_llm(openai_api_key: str, endpoint: str, api_version: str) -> AzureOpenAI:
+    llm = AzureOpenAI(
+        api_key=openai_api_key,
+        azure_endpoint=endpoint,
+        api_version=api_version
+    )
+    return llm
+
 
 
 def get_search(index_name: str, api_key: str, ai_search_endpoint: str) -> SearchClient:

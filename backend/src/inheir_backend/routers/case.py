@@ -76,7 +76,7 @@ async def create_case(
     case_details = CaseDetails(**case_details)
     case_insert_result = await case_details_collection.insert_one(case_details.dict())
     case_id = case_insert_result.inserted_id
-    case_id = str(case_inserted_id)
+    case_id = str(case_id)
 
     user_document = await upload_user_file(document, user_id=user_id, case_id=case_id, chat_id=None, case=True)
     document_url = user_document.get("url")
@@ -106,7 +106,7 @@ async def create_case(
             supporting_doc_content = str(0+1) + ". " + supporting_doc_content
             supporting_document_content.append(supporting_doc_content.strip())
     try:
-        client = config.llm
+        client = config.langchain_llm
         chain = LLMChain(
             llm=client,
             prompt=case_summary_prompt_template
@@ -118,7 +118,7 @@ async def create_case(
         }
         response = chain.invoke(chain_info)
         result = json.loads(response)
-        result["id"] = case_id
+        result["case_id"] = case_id
 
         case_summary = CaseSummary(**result)
         case_summary_id = await case_summary_collection.insert_one(case_details.dict())
