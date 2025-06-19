@@ -21,9 +21,10 @@ async def create_report(
     req: Request,
     report: Report
 ):
-    user_id = req.state.user.get("user_id") or config.env.anonymous_user_id
+    user_id = config.env.anonymous_user_id
+    if req.state.user:
+        user_id = req.state.user.get("user_id")
     report_collection = config.db['report']
-
     report_data = report.dict()
     report_data["user_id"] = user_id
 
@@ -65,7 +66,10 @@ async def get_reports(
 
 @router.post("/{report_id}/verify")
 async def verify_report(report_id: str, req: Request, body: Reason):
-    if not req.state.user or req.state.user.get("role") != "Admin":
+    if not req.state.user:
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    if not req.state.user.get("role") != "Admin":
         raise HTTPException(status_code=404, detail="Not found")
 
     report_collection = config.db["report"]
@@ -89,7 +93,10 @@ async def verify_report(report_id: str, req: Request, body: Reason):
 
 @router.post("/{report_id}/unverify")
 async def unverify_report(report_id: str, req: Request, body: Reason):
-    if not req.state.user or req.state.user.get("role") != "Admin":
+    if not req.state.user:
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    if not req.state.user.get("role") != "Admin":
         raise HTTPException(status_code=404, detail="Not found")
 
     report_collection = config.db["report"]
@@ -114,7 +121,10 @@ async def unverify_report(report_id: str, req: Request, body: Reason):
 
 @router.get("/{report_id}")
 async def get_report(report_id: str, req: Request):
-    if not req.state.user or req.state.user.get("role") != "Admin":
+    if not req.state.user:
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    if not req.state.user.get("role") != "Admin":
         raise HTTPException(status_code=404, detail="Not found")
 
     report_collection = config.db["report"]
