@@ -13,7 +13,7 @@ from langchain.chains.llm import LLMChain
 
 config: AppConfig = AppConfig()
 
-router = APIRouter(prefix="/chatbot", tags=["chatbot"])
+router = APIRouter(prefix="/chatbot", tags=["Chatbot"])
 
 class ChatbotRequest(BaseModel):
     query: str

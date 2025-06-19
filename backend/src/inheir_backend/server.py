@@ -10,7 +10,6 @@ from .middleware.auth import JWTMiddleware
 
 from .routers.api.v1 import router as v1_router
 from .routers.gis import router as gis_router
-from .routers.chatbot import router as chatbot_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,5 +35,3 @@ app.add_middleware(
 app.add_middleware(JWTMiddleware)
 
 app.include_router(v1_router, prefix="/api/v1")
-app.include_router(gis_router)
-app.include_router(chatbot_router)
