@@ -9,9 +9,7 @@ export type FeatureData = {
   description: string;
 }
 
-export type Case = {
-
-}
+export type CaseTabs = 'chatbot' | 'gis' | 'documents';
 
 export type CaseData = {
   meta: CaseResponse;

@@ -1,12 +1,12 @@
 "use client"
 
-import { CaseData } from "@/lib/validators/types";
-import { Tab, TabList, Toast, ToastIntent, ToastPosition, ToastTitle, Toaster, useId, useToastController } from "@fluentui/react-components";
+import { CaseData, CaseTabs } from "@/lib/validators/types";
+import { SelectTabData, SelectTabEvent, Tab, TabList, Toast, ToastIntent, ToastPosition, ToastTitle, Toaster, useId, useToastController } from "@fluentui/react-components";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
-export default function Page() {
+export default function Page({ params }: { params: { case_id: string } }) {
   const toasterId = useId("toaster-id")
   const { dispatchToast } = useToastController(toasterId)
   const ToastMessage = (message: string, intent: ToastIntent = "success", position: ToastPosition = "bottom-end") => {
@@ -25,6 +25,11 @@ export default function Page() {
   const pathName = usePathname();
   const case_id: string = pathName.split("/").pop() || "";
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [selectedTab, setSelectedTab] = useState<CaseTabs>('chatbot');
+  const handleTabSelect = (_: SelectTabEvent, data: SelectTabData) => {
+    setSelectedTab(data.value as CaseTabs);
+  }
 
   const [caseData, setCaseData] = useState<CaseData | null>(null);
   const getCaseData = async () => {
@@ -67,7 +72,7 @@ export default function Page() {
       <div className="flex w-full h-full">
         <Toaster toasterId={toasterId} />
         <div className="flex flex-col lg:flex-row w-full h-full">
-          <div className="border w-full lg:w-1/3 flex flex-col p-5 lg:p-8 gap-10 overflow-y-auto">
+          <div className="border-b-2 lg:border-b-0 lg:border-r-2 w-full lg:w-1/3 flex flex-col p-5 lg:p-8 gap-10 overflow-y-auto">
             <div>
               <h1 className="text-md lg:text-lg font-medium text-gray-600">Case Title</h1>
 
@@ -302,16 +307,35 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="border w-full lg:w-2/3">
-            <div className="flex flex-col w-full h-full">
-              <div className="w-full h-20 flex items-center justify-center">
-                <TabList>
+          <div className="w-full lg:w-2/3">
+            <div className="grid grid-rows-[auto_1fr] w-full h-full">
+              <div className="w-full h-20 grid place-items-center bg-gray-100 border-b-2">
+                <TabList selectedValue={selectedTab} onTabSelect={handleTabSelect}>
                   <Tab value={'chatbot'}>AI Assistant</Tab>
-                  <Tab value={'document'}>Documents Summary</Tab>
+                  <Tab value={'documents'}>Documents Summary</Tab>
                   <Tab value={'gis'}>GIS</Tab>
                 </TabList>
               </div>
-              <div>
+              <div className="w-full h-full p-5 lg:p-8 flex items-center justify-center">
+                {isLoading ? (
+                  <div className="flex items-center justify-center w-full h-full">
+                    <p className="text-md text-gray-500">Loading...</p>
+                  </div>
+                ) :
+                  selectedTab === 'chatbot' ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <p className="text-md text-gray-500">Chatbot functionality will be implemented here.</p>
+                    </div>
+                  ) : selectedTab === 'documents' ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <p className="text-md text-gray-500">Document summary functionality will be implemented here.</p>
+                    </div>
+                  ) : selectedTab === 'gis' ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <p className="text-md text-gray-500">GIS functionality will be implemented here.</p>
+                    </div>
+                  ) : null
+                }
               </div>
             </div>
           </div>
