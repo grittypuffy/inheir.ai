@@ -291,7 +291,7 @@ async def abort_case(req: Request, case_id: str, remarks: Remarks):
             status_code=200
         )
 
-@router.get("/{case_id}/chats")
+@router.get("/{case_id}/chats", response_model=ChatMetaResponse)
 async def get_chats(req: Request, case_id: str):
     if not req.state.user:
         return JSONResponse(
