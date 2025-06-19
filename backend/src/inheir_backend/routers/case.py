@@ -14,6 +14,7 @@ from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, H
 from langchain.chains.llm import LLMChain
 from ..helpers.serializer import serializer
 from fastapi import HTTPException
+from bson import ObjectId
 
 router = APIRouter(tags=["Case Analysis"])
 
@@ -209,10 +210,12 @@ async def get_summary(req: Request, case_id: str):
         case_details_collection = config.db["case_details"]
         case_summary_collection = config.db['case_summary']
         case_doc = await case_details_collection.find_one(
-            {"user_id": user_id, "case_id": case_id},
+            {"user_id": user_id, "_id": ObjectId(case_id)},
             {"title": 1, "status": 1, "created_at": 1}
         )
-        case_doc["created_at"] = str(case_doc["created_at"])
+        case_doc["created_at"] = case_doc["created_at"].__str__()
+        case_doc["case_id"] = case_doc["_id"].__str__()
+        case_doc.pop("_id", None)
         case_summary_doc = await case_summary_collection.find_one(
             {"case_id": case_id}
         )
@@ -226,7 +229,7 @@ async def get_summary(req: Request, case_id: str):
         case_response = Case(**case_dict)
         return JSONResponse(
             status_code=200,
-            content=case_response
+            content=case_response.model_dump()
         )
 
 @router.post("/{case_id}/resolve")
