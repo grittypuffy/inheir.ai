@@ -84,6 +84,11 @@ const CreateCase = () => {
       const res: Response = await fetch(`/api/v1/case/create?title=${formData.title}&address=${formData.address}`, {
         method: 'POST',
         body: submitData,
+        headers: {
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
+
       });
 
       if (res.ok) {
