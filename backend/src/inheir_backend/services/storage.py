@@ -1,6 +1,5 @@
 from src.inheir_backend.config import AppConfig, get_config
 from fastapi import UploadFile
-from src.inheir_backend.models.upload import FileUploadMetadata
 from ..helpers.filename import get_filename_hash
 from azure.storage.blob import BlobClient
 
