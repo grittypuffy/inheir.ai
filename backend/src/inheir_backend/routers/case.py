@@ -123,7 +123,6 @@ async def create_case(
             "supporting_documents": "\n".join(supporting_document_content)
         }
         response = chain.invoke(chain_info)
-        logging.info(response)
         case_summ_dict = json.loads(response.pop("text"))
         case_summ_dict["case_id"] = case_id
         case_summ_dict["document_content"] = response.pop("document")
