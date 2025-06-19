@@ -214,73 +214,73 @@ export default function Page() {
 
                 <div className="flex flex-col gap-2">
                   <p className="text-md text-gray-500">Entities:</p>
-                  <p className="text-md text-gray-700">
-                    {isLoading ? (
+                  {isLoading ? (
+                    <p className="text-md text-gray-700">
                       "Loading..."
-                    ) : caseData?.summary?.entity ? (
-                      caseData.summary.entity.map((entry, i) => (
-                        <>
-                          <div key={i}>
-                            <div className="flex flex-row justify-between">
-                              <span className="font-semibold">{entry.name}:</span>
-                            </div>
+                    </p>
+                  ) : caseData?.summary?.entity ? (
+                    caseData.summary.entity.map((entry, i) => (
+                      <div key={i}>
+                        <div className="flex flex-row justify-between">
+                          <span className="font-semibold">{entry.name}:</span>
+                        </div>
 
-                            <div className="flex flex-row justify-between">
-                              <span className="ml-2">{entry.entity_type}</span>
-                            </div>
+                        <div className="flex flex-row justify-between">
+                          <span className="ml-2">{entry.entity_type}</span>
+                        </div>
 
-                            <div className="flex flex-row justify-between">
-                              <span className="ml-2 text-gray-500">{entry.valid}</span>
-                            </div>
-                          </div>
-                        </>
-                      ))
-                    ) : (
+                        <div className="flex flex-row justify-between">
+                          <span className="ml-2 text-gray-500">{entry.valid}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-md text-gray-700">
                       "No Entities available"
-                    )}
-                  </p>
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <p className="text-md text-gray-500">Assets:</p>
-                  <p className="text-md text-gray-700">
-                    {isLoading ? (
+                  {isLoading ? (
+                    <p className="text-md text-gray-700">
                       "Loading..."
-                    ) : caseData?.summary?.asset ? (
-                      caseData.summary.asset.map((entry, i) => (
-                        <>
-                          <div key={i}>
-                            <div className="flex flex-row justify-between">
-                              <span className="font-semibold">Name: </span>
-                              <span className="font-semibold">{entry.name}:</span>
-                            </div>
+                    </p>
+                  ) : caseData?.summary?.asset ? (
+                    caseData.summary.asset.map((entry, i) => (
+                      <div key={i}>
+                        <div className="flex flex-row justify-between">
+                          <span className="font-semibold">Name: </span>
+                          <span className="font-semibold">{entry.name}:</span>
+                        </div>
 
-                            <div className="flex flex-row justify-between">
-                              <span className="ml-2">Asset Type:</span>
-                              <span className="ml-2">{entry.asset_type}</span>
-                            </div>
+                        <div className="flex flex-row justify-between">
+                          <span className="ml-2">Asset Type:</span>
+                          <span className="ml-2">{entry.asset_type}</span>
+                        </div>
 
-                            <div className="flex flex-row justify-between">
-                              <span className="ml-2">Net Worth:</span>
-                              <span className="ml-2 text-gray-500">{entry.net_worth}</span>
-                            </div>
+                        <div className="flex flex-row justify-between">
+                          <span className="ml-2">Net Worth:</span>
+                          <span className="ml-2 text-gray-500">{entry.net_worth}</span>
+                        </div>
 
-                            <div className="flex flex-row justify-between">
-                              <span className="ml-2">Location:</span>
-                              <span className="ml-2 text-gray-500">{entry.location}</span>
-                            </div>
+                        <div className="flex flex-row justify-between">
+                          <span className="ml-2">Location:</span>
+                          <span className="ml-2 text-gray-500">{entry.location}</span>
+                        </div>
 
-                            <div className="flex flex-row justify-between">
-                              <span className="ml-2">Coordinates:</span>
-                              <span className="ml-2 text-gray-500">{entry.coordinates}</span>
-                            </div>
-                          </div>
-                        </>
-                      ))
-                    ) : (
+                        <div className="flex flex-row justify-between">
+                          <span className="ml-2">Coordinates:</span>
+                          <span className="ml-2 text-gray-500">{entry.coordinates}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-md text-gray-700">
                       "No Assets available"
-                    )}
-                  </p>
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-4 py-1">
