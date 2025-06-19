@@ -67,6 +67,42 @@ export default function Page() {
     longitude: 0,
   });
 
+  // GIS analysis state
+  const [gisInput, setGisInput] = useState("");
+  const [gisLoading, setGisLoading] = useState(false);
+  const [gisResult, setGisResult] = useState<any>(null);
+
+  // GIS form submit handler
+  const handleGisSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setGisLoading(true);
+    setGisResult(null);
+    try {
+      const res = await fetch("/api/v1/gis/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ address: gisInput })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setGisResult(data);
+        if (data.coordinates && map.current) {
+          map.current.flyTo({
+            center: [data.coordinates.longitude, data.coordinates.latitude],
+            zoom: 20
+          });
+        }
+      } else {
+        ToastMessage("Failed to analyze GIS data.", "error");
+      }
+    } catch (err) {
+      ToastMessage("Error analyzing GIS data.", "error");
+    } finally {
+      setGisLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!caseData) {
       getCaseData().finally(() => {
@@ -253,8 +289,8 @@ export default function Page() {
                     <p className="text-md text-gray-700">
                       {isLoading ? (
                         "Loading documents..."
-                      ) : caseData ? (
-                        caseData?.summary?.document || "No document available"
+                      ) : caseData && caseData?.summary?.document ? (
+                        <a href={caseData.summary.document} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{caseData.summary.document}</a>
                       ) : (
                         "No document available"
                       )}
@@ -268,7 +304,7 @@ export default function Page() {
                       ) : caseData?.summary?.supporting_documents && caseData.summary.supporting_documents.length > 0 ? (
                         caseData.summary.supporting_documents.map((doc, i) => (
                           <div key={i} className="flex flex-col gap-2">
-                            <p className="text-md text-gray-700">{doc}</p>
+                            <a href={doc} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{doc}</a>
                           </div>
                         ))
                       ) : (
@@ -363,32 +399,48 @@ export default function Page() {
                     </div>
                   ) : selectedTab === 'gis' ? (
                     <div className="flex flex-col items-center justify-center w-full h-full">
-                      <form className="flex flex-row items-center justify-center gap-3 w-full" >
+                      <form className="flex flex-row items-center justify-center gap-3 w-full" onSubmit={handleGisSubmit}>
                         <Field className="">
                           <Input
                             type="text"
                             placeholder="Enter address"
                             appearance="underline"
+                            value={gisInput}
+                            onChange={e => setGisInput(e.target.value)}
+                            disabled={gisLoading}
                           />
                         </Field>
                         <Button
                           type="submit"
                           appearance="primary"
                           className="mt-3"
-                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                            e.preventDefault();
-                            if (map.current) {
-                              map.current.flyTo({
-                                center: [45, 68],
-                                zoom: 10,
-                              });
-                            }
-                          }}
-                        > Search </Button>
+                          disabled={gisLoading || !gisInput.trim()}
+                        >
+                          {gisLoading ? 'Analyzing...' : 'Search'}
+                        </Button>
                       </form>
                       <div className="relative w-full h-full">
                         <div className="absolute w-full h-full" ref={mapContainerRef} />
                       </div>
+                      {gisResult && (
+                        <div className="mt-6 w-full max-w-lg bg-white rounded shadow p-4">
+                          <h2 className="text-lg font-semibold mb-2">GIS Analysis Result</h2>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div><b>Latitude:</b> {gisResult.coordinates?.latitude}</div>
+                            <div><b>Longitude:</b> {gisResult.coordinates?.longitude}</div>
+                            <div><b>Property Buying Risk:</b> {gisResult.property_buying_risk * 100}</div>
+                            <div><b>Property Renting Risk:</b> {gisResult.property_renting_risk * 100}</div>
+                            <div><b>Flood Risk:</b> {gisResult.flood_risk * 100}</div>
+                            <div><b>Crime Rate:</b> {gisResult.crime_rate * 100}</div>
+                            <div><b>Air Quality Index:</b> {gisResult.air_quality_index * 100}</div>
+                            <div><b>Proximity to Amenities:</b> {gisResult.proximity_to_amenities * 100}</div>
+                            <div><b>Transportation Score:</b> {gisResult.transportation_score * 100}</div>
+                            <div><b>Neighborhood Rating:</b> {gisResult.neighborhood_rating * 100}</div>
+                            <div><b>Environmental Hazards:</b> {gisResult.environmental_hazards * 100}</div>
+                            <div><b>Economic Growth Potential:</b> {gisResult.economic_growth_potential * 100}</div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : null
                 }

@@ -32,6 +32,8 @@ const CreateCase = () => {
   const mainDocumentRef = useRef<HTMLInputElement>(null);
   const supportingDocumentsRef = useRef<HTMLInputElement>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -70,16 +72,14 @@ const CreateCase = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    setLoading(true);
     const submitData = new FormData();
     if (mainDocument) {
       submitData.append("document", mainDocument);
     }
-
     supportingDocuments.forEach((file, _) => {
       submitData.append(`supporting_documents`, file);
     });
-
     try {
       const res: Response = await fetch(`/api/v1/case/create?title=${formData.title}&address=${formData.address}`, {
         method: 'POST',
@@ -89,7 +89,6 @@ const CreateCase = () => {
         },
         credentials: 'include',
       });
-
       if (res.ok) {
         const data:any = await res.json();
         const case_id = data.case_id;
@@ -99,6 +98,8 @@ const CreateCase = () => {
       }
     } catch (error) {
       ToastMessage("An unexpected error occurred. Please try again.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -229,8 +230,9 @@ const CreateCase = () => {
             <button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
             >
-              Create Case
+              {loading ? 'Creating case...' : 'Create Case'}
             </button>
           </div>
         </form>
