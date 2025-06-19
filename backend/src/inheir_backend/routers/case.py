@@ -157,7 +157,7 @@ async def create_case(
 
 @router.get("/", response_model=CaseMetaResponse)
 async def get_cases(req: Request):
-    user_id = None
+    user_id = config.env.anonymous_user_id
     if req.state.user:
         user_id = req.state.user.get("user_id")
     if not user_id:
@@ -177,22 +177,26 @@ async def get_cases(req: Request):
         ).sort("created_at", -1)
         cases = []
         async for doc in cursor:
-            doc["_id"] = serializer(doc) 
-            doc["case_id"] = doc.pop("_id")
-            doc["created_at"] = str(doc["created_at"])
-            cases.append(CaseResponse(**doc))
+            doc["_id"] = doc["_id"].__str__()
+            doc["case_id"] = doc["_id"]
+            doc["created_at"] = doc["created_at"].__str__()
+            doc.pop("_id", None)
+            cases.append(CaseResponse(**doc)) 
         cases_dict = {"cases": cases}
         case_response = CaseMetaResponse(**cases_dict)
         return JSONResponse(
             status_code=200,
             content={
-                "cases": cases
+                "cases": case_response.model_dump(),
             }
         )
         
 @router.get("/{case_id}", response_model=Case)
 async def get_summary(req: Request, case_id: str):
-    user_id = req.state.user.get("user_id")
+    logging.info(req.state.user)
+    user_id = config.env.anonymous_user_id
+    if req.state.user:
+        user_id = req.state.user.get("user_id")
     if not user_id:
         return JSONResponse(
             status_code=401,
