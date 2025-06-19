@@ -117,7 +117,11 @@ def ingest_document(file_path: str):
 
 
 def search_documents(query: str):
-    results = config.search.search(search_text=query, query_type="semantic", top=3)
+    results = config.search.search(
+        search_text=query,
+        # query_type="semantic",
+        top=3
+    )
     documents = []
     for result in results:
         documents.append(result["content"])
