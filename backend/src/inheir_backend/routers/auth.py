@@ -138,7 +138,7 @@ async def sign_in(payload: SignInRequest, response: Response):
             value=payload[0],
             samesite="none",
             expires=datetime.datetime.now(
-                datetime.UTC) + datetime.timedelta(seconds=864000),
+                datetime.UTC) + datetime.timedelta(days=120),
             httponly=True,
             secure=True,
         )
