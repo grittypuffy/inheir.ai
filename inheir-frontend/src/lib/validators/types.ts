@@ -15,8 +15,35 @@ export type Coordinates = {
 }
 
 export type ChatHistory = {
-  user: string;
-  bot: string;
+  query: string;
+  response: string;
+};
+
+export type ChatResponse = {
+  chat_id: string;
+  user_id: string;
+  case_id: string | null;
+  document: string | null;
+  query: {
+    role: string;
+    content: string;
+  };
+  response: {
+    role: string;
+    content: string;
+  };
+}
+
+export type Chat = {
+  content: string;
+  type: 'query' | 'response';
+}
+
+export type ChatHistoryResponse = {
+  chats: ChatResponse[];
+  status: string;
+  success: string;
+  reason: string | null;
 }
 
 export type CaseTabs = 'chatbot' | 'gis' | 'documents';

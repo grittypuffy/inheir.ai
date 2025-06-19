@@ -1,5 +1,6 @@
 "use client"
 
+import { ChatUI } from "@/lib/components/Chatbot";
 import { CaseData, CaseTabs, Coordinates } from "@/lib/validators/types";
 import { Button, Field, Input, SelectTabData, SelectTabEvent, Tab, TabList, Toast, ToastIntent, ToastPosition, ToastTitle, Toaster, useId, useToastController } from "@fluentui/react-components";
 import { Map } from "maplibre-gl";
@@ -343,16 +344,14 @@ export default function Page() {
                   <Tab value={'gis'}>GIS</Tab>
                 </TabList>
               </div>
-              <div className="w-full h-full p-5 lg:p-8 flex items-center justify-center">
+              <div className="w-full h-full flex items-center justify-center">
                 {isLoading ? (
                   <div className="flex items-center justify-center w-full h-full">
                     <p className="text-md text-gray-500">Loading...</p>
                   </div>
                 ) :
                   selectedTab === 'chatbot' ? (
-                    <div className="flex items-center justify-center w-full h-full">
-                      <p className="text-md text-gray-500">Chatbot functionality will be implemented here.</p>
-                    </div>
+                    <ChatUI caseId={case_id} />
                   ) : selectedTab === 'documents' ? (
                     <div className="flex items-center justify-center w-full h-full">
                       {caseData?.summary?.summary ? (
