@@ -5,9 +5,9 @@ from ..config import AppConfig, get_config
 config: AppConfig = get_config()
 
 class Report(BaseModel):
-    full_name: str
+    full_name: Optional[str] = None
     address: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     report: str
     verdict: Literal["Pending", "Verified", "Not Verified"] = "Pending"
     reason: Optional[str] = None
