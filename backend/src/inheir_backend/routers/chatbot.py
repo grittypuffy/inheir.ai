@@ -8,6 +8,7 @@ from ..config import AppConfig
 from ..services.rag import search_documents
 from ..models.chat import Chat
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
+from ..services.storage import upload_user_file
 from langchain.chains.llm import LLMChain
 
 

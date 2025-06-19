@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from bson import ObjectId
 from typing import Optional, List
 from datetime import datetime
@@ -13,13 +13,21 @@ class CaseDetails(BaseModel):
     user_id: str = config.env.anonymous_user_id
     status: str = "Open" # Open | Resolved | Aborted
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        populate_by_name=True,
+        json_encoders={
+            datetime: lambda dt: dt.isoformat(),
+        },
+    )
+    """
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {
             datetime: lambda dt: dt.isoformat(),
         }
         allow_population_by_field_name = True
-
+    """
 
 class CaseResponse(BaseModel):
     case_id: str

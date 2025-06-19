@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
-
 from .config import AppConfig
 
 from .constants.middleware import cors_allowed_headers, cors_allowed_methods
@@ -9,7 +8,6 @@ from .constants.middleware import cors_allowed_headers, cors_allowed_methods
 from .middleware.auth import JWTMiddleware
 
 from .routers.api.v1 import router as v1_router
-from .routers.gis import router as gis_router
 
 logging.basicConfig(
     level=logging.INFO,

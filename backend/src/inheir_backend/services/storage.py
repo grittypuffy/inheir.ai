@@ -1,4 +1,4 @@
-from src.inheir_backend.config import AppConfig, get_config
+from ..config import AppConfig, get_config
 from fastapi import UploadFile
 from ..helpers.filename import get_filename_hash
 from azure.storage.blob import BlobClient
