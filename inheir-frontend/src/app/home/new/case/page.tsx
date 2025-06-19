@@ -91,7 +91,8 @@ const CreateCase = () => {
       });
 
       if (res.ok) {
-        const case_id: string = await res.json();
+        const data:any = await res.json();
+        const case_id = data.case_id;
         router.push(`/home/case/${case_id}`)
       } else {
         ToastMessage("Error creating case. Please try again.", "error");
