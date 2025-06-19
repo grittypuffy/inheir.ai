@@ -1,9 +1,13 @@
 from pydantic import BaseModel
-from typing import Literal
+from typing import Literal, Optional
+from ..config import AppConfig, get_config
+
+config: AppConfig = get_config()
 
 class Report(BaseModel):
     full_name: str
     address: str
-    location: str
-    message: str
+    report: str
     verdict: Literal["Pending", "Verified", "Not Verified"] = "Pending"
+    reason: Optional[str] = None
+    user_id: str = config.env.anonymous_user_id

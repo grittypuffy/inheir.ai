@@ -1,13 +1,13 @@
 from pydantic import BaseModel, EmailStr, field_validator
 import re
-
+from typing import Literal
 
 class SignUpRequest(BaseModel):
     username: str
     full_name: str
     email: EmailStr
     password: str
-    role: str = "User"
+    role: Literal["User", "Admin", "Guest", "Moderator"] = "User"
 
     @field_validator('username')
     def validate_username(cls, value):
