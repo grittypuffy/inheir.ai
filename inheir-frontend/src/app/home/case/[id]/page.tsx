@@ -253,8 +253,8 @@ export default function Page() {
                     <p className="text-md text-gray-700">
                       {isLoading ? (
                         "Loading documents..."
-                      ) : caseData ? (
-                        caseData?.summary?.document || "No document available"
+                      ) : caseData && caseData?.summary?.document ? (
+                        <a href={caseData.summary.document} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{caseData.summary.document}</a>
                       ) : (
                         "No document available"
                       )}
@@ -268,7 +268,7 @@ export default function Page() {
                       ) : caseData?.summary?.supporting_documents && caseData.summary.supporting_documents.length > 0 ? (
                         caseData.summary.supporting_documents.map((doc, i) => (
                           <div key={i} className="flex flex-col gap-2">
-                            <p className="text-md text-gray-700">{doc}</p>
+                            <a href={doc} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{doc}</a>
                           </div>
                         ))
                       ) : (
