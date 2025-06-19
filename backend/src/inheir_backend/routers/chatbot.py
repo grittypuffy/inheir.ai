@@ -62,14 +62,18 @@ async def chat(
     case_id: Optional[str] = None,
     context: Optional[str] = None
 ):
-    user_id = config.env.anonymous_user_id
+    user_id = config.env.anonymous_user_id 
     if req.state.user:
         user_id = req.state.user.get("user_id")
 
     try:
         client = config.llm
 
-        if context:            
+        if context:
+            if document and case_id:
+                user_document = await upload_user_file(document, user_id=user_id, case_id=case_id, chat_id=None, case=False)
+                document_url = user_document.get("url")
+
             messages = [
                 {"role": "system", "content": chatbot_system_template},
                 {"role": "user", "content": f"Context: {context}\n\nQuestion: {request.query}"}
@@ -90,6 +94,7 @@ async def chat(
                     "role": "bot",
                     "content": response.choices[0].messages.content
                 },
+                "document": document or None,
                 "case_id": case_id,
                 "user_id": user_id
             } 
@@ -167,6 +172,7 @@ async def chat(
                     "user_id": user_id
                 } 
                 chat_insert_result = await config.db["chat_history"].insert_one(chat_history_doc)
+                chat_history_doc["chat_id"] = str(chat_insert_result.inserted_id)
                 return ChatbotResponse(
                     response=response,
                     source="rag"                

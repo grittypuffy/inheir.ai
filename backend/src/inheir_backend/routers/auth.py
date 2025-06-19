@@ -53,6 +53,14 @@ async def check_username_availability(username: str):
 
 @router.post("/sign_up")
 async def sign_up(payload: SignUpRequest):
+    if payload.username == "anonymous":
+        return JSONResponse(
+            status_code=400,
+            content={
+                "status": "failed",
+                "message": "Username is taken"
+            }
+        )
     try:
         user = await config.db["user"].find_one({"username": payload.username})
         if user:
@@ -96,6 +104,14 @@ async def sign_up(payload: SignUpRequest):
 
 @router.post("/sign_in")
 async def sign_in(payload: SignInRequest, response: Response):
+    if payload.username == "anonymous":
+        return JSONResponse(
+            status_code=404,
+            content={
+                "status": "failed",
+                "message": "User does not exist on the system."
+            }
+        )
     try:
         user = await config.db["user"].find_one({"username": payload.username})
         if not user:
@@ -122,7 +138,7 @@ async def sign_in(payload: SignInRequest, response: Response):
             value=payload[0],
             samesite="none",
             expires=datetime.datetime.now(
-                datetime.UTC) + datetime.timedelta(seconds=1800),
+                datetime.UTC) + datetime.timedelta(seconds=864000),
             httponly=True,
             secure=True,
         )
