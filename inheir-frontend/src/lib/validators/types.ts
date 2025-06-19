@@ -9,6 +9,16 @@ export type FeatureData = {
   description: string;
 }
 
+export type Coordinates = {
+  latitude: number;
+  longitude: number;
+}
+
+export type ChatHistory = {
+  user: string;
+  bot: string;
+}
+
 export type CaseTabs = 'chatbot' | 'gis' | 'documents';
 
 export type CaseData = {

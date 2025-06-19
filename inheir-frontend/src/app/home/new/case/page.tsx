@@ -88,7 +88,6 @@ const CreateCase = () => {
           'Accept': 'application/json',
         },
         credentials: 'include',
-
       });
 
       if (res.ok) {

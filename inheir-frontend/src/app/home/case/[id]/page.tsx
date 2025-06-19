@@ -1,12 +1,13 @@
 "use client"
 
-import { CaseData, CaseTabs } from "@/lib/validators/types";
-import { SelectTabData, SelectTabEvent, Tab, TabList, Toast, ToastIntent, ToastPosition, ToastTitle, Toaster, useId, useToastController } from "@fluentui/react-components";
+import { CaseData, CaseTabs, Coordinates } from "@/lib/validators/types";
+import { Button, Field, Input, SelectTabData, SelectTabEvent, Tab, TabList, Toast, ToastIntent, ToastPosition, ToastTitle, Toaster, useId, useToastController } from "@fluentui/react-components";
+import { Map } from "maplibre-gl";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
-export default function Page({ params }: { params: { case_id: string } }) {
+export default function Page() {
   const toasterId = useId("toaster-id")
   const { dispatchToast } = useToastController(toasterId)
   const ToastMessage = (message: string, intent: ToastIntent = "success", position: ToastPosition = "bottom-end") => {
@@ -59,6 +60,13 @@ export default function Page({ params }: { params: { case_id: string } }) {
     }
   }
 
+  const map = useRef<Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [coordinates, setCoordinates] = useState<Coordinates>({
+    latitude: 0,
+    longitude: 0,
+  });
+
   useEffect(() => {
     if (!caseData) {
       getCaseData().finally(() => {
@@ -66,6 +74,25 @@ export default function Page({ params }: { params: { case_id: string } }) {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedTab === 'gis' && mapContainerRef.current) {
+      map.current = new Map({
+        container: mapContainerRef.current,
+        style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+        center: [0, 0],
+        zoom: 1,
+        maplibreLogo: false,
+        attributionControl: false,
+      });
+
+      map.current.on('style.load', () => {
+        map.current?.setProjection({
+          type: 'globe',
+        })
+      })
+    }
+  }, [selectedTab]);
 
   return (
     <>
@@ -328,11 +355,40 @@ export default function Page({ params }: { params: { case_id: string } }) {
                     </div>
                   ) : selectedTab === 'documents' ? (
                     <div className="flex items-center justify-center w-full h-full">
-                      <p className="text-md text-gray-500">Document summary functionality will be implemented here.</p>
+                      {caseData?.summary?.summary ? (
+                        <></>
+                      ) : (
+                        <p className="text-md text-gray-500">No document summary available</p>
+                      )}
                     </div>
                   ) : selectedTab === 'gis' ? (
-                    <div className="flex items-center justify-center w-full h-full">
-                      <p className="text-md text-gray-500">GIS functionality will be implemented here.</p>
+                    <div className="flex flex-col items-center justify-center w-full h-full">
+                      <form className="flex flex-row items-center justify-center gap-3 w-full" >
+                        <Field className="">
+                          <Input
+                            type="text"
+                            placeholder="Enter address"
+                            appearance="underline"
+                          />
+                        </Field>
+                        <Button
+                          type="submit"
+                          appearance="primary"
+                          className="mt-3"
+                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                            e.preventDefault();
+                            if (map.current) {
+                              map.current.flyTo({
+                                center: [45, 68],
+                                zoom: 10,
+                              });
+                            }
+                          }}
+                        > Search </Button>
+                      </form>
+                      <div className="relative w-full h-full">
+                        <div className="absolute w-full h-full" ref={mapContainerRef} />
+                      </div>
                     </div>
                   ) : null
                 }
