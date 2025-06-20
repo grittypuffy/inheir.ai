@@ -41,21 +41,23 @@ async def create_report(
 
 @router.get("/all")
 async def get_reports(
-    req: Request,
-    report: Report
+    req: Request
 ):
+
     if not req.state.user:
-        raise HTTPException(status_code=404, detail=f"Not found")
+            raise HTTPException(status_code=404, detail=f"Not found")
     user_role = req.state.user.get("role")
     if user_role is not "Admin":
-        raise HTTPException(status_code=404, detail=f"Not found")
-    
+        raise HTTPException(status_code=404, detail=f"Not found")   
+
     report_collection = config.db['report']
     try:
         cursor = report_collection.find({})
         reports = []
         async for report in cursor:
-            reports.append(serializer(report))        
+            report = serializer(report)
+            report["id"] = report.pop("_id")
+            reports.append(report)
         return {
             "message": "Reports retrieved successfully",
             "data": reports
