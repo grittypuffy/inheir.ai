@@ -63,9 +63,11 @@ export type CaseMetaResponse = {
 export type CaseResponse = {
   case_id: string;
   title: string;
-  status: string;
+  status: CaseStatus;
   created_at: string;
 }
+
+export type CaseStatus = 'Open' | 'Resolved' | 'Aborted'
 
 export type CaseSummary = {
   case_id: string;
