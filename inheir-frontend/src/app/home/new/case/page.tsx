@@ -180,7 +180,6 @@ const CreateCase = () => {
                   id="supportingDocuments"
                   type="file"
                   multiple
-                  required
                   className="w-full"
                   onChange={handleSupportingDocumentsChange}
                 />

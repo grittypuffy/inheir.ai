@@ -76,29 +76,20 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
         const data: ChatHistoryResponse = apiData.chats;
         console.log('Fetched chat history:', data);
         const newChatHistory: Chat[] = [];
-
-        data.chats.forEach((chat: ChatResponse) => {
-          const queryChat: Chat = {
-            content: chat.query.content,
-            type: 'query',
-          };
-          const responseChat: Chat = {
-            content: chat.response.content,
-            type: 'response',
-          };
-          newChatHistory.push(queryChat, responseChat);
-        });
-
-        setChatHistory(
-          newChatHistory.length > 0
-            ? newChatHistory
-            : [
-                {
-                  content: 'Welcome to the AI Chatbot! How can I assist you today?',
-                  type: 'response',
-                },
-              ]
-        );
+        if (data) {
+          data.chats.forEach((chat: ChatResponse) => {
+            const queryChat: Chat = {
+              content: chat.query.content,
+              type: 'query',
+            };
+            const responseChat: Chat = {
+              content: chat.response.content,
+              type: 'response',
+            };
+            newChatHistory.push(queryChat, responseChat);
+          });
+        }
+        setChatHistory(newChatHistory.length > 0 ? newChatHistory : chatHistory);
       } else {
         setChatHistory([
           {
