@@ -31,3 +31,12 @@ export const getItem = (key: string): string | null => {
 
   return localStorage.getItem(key);
 }
+export const isMobileDevice = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia("(max-width: 768px)").matches;
+}
+
+export const isDesktopDevice = (): boolean => {
+  return !isMobileDevice();
+}

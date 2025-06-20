@@ -204,7 +204,6 @@ const AuthForm = () => {
               setItems([
                 { key: 'username', value: formData.username },
                 { key: 'full_name', value: formData.full_name },
-                { key: 'email', value: formData.email },
               ]);
 
               router.push('/home');
@@ -251,7 +250,10 @@ const AuthForm = () => {
         } else {
           ToastMessage({ message: 'Sign In Successful', description: 'Redirecting...' }, 'success');
           setTimeout(() => {
-            setItems([{ key: 'username', value: formData.username }]);
+            setItems([
+              { key: 'username', value: formData.username },
+              { key: 'fullName', value: formData.full_name }
+            ]);
             router.push('/home');
           }, 400);
         }
