@@ -117,11 +117,10 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
     return (
       <div key={index} className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
         <div
-          className={`max-w-[70%] rounded-lg px-4 py-2 ${
-            isUser
-              ? 'bg-blue-500 text-white rounded-br-none'
-              : 'bg-gray-200 text-gray-800 rounded-bl-none'
-          }`}
+          className={`max-w-[70%] rounded-lg px-4 py-2 ${isUser
+            ? 'bg-blue-500 text-white rounded-br-none'
+            : 'bg-gray-200 text-gray-800 rounded-bl-none'
+            }`}
         >
           <p className="whitespace-pre-wrap">{chat.content}</p>
         </div>
@@ -132,17 +131,9 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <div
-          className="flex-1 overflow-y-auto p-4"
-          style={{ scrollBehavior: 'smooth' }}
-          ref={(el) => {
-            if (el && (chatHistory.length > 0 || isFetching)) {
-              el.scrollTop = el.scrollHeight;
-            }
-          }}
-        >
+        <div className=" p-4 flex flex-col shrink-0 overflow-y-auto scroll-smooth h-full max-h-[calc(90vh-70px)]">
           {isLoading ? (
-            <div className="flex justify-center items-center h-full">
+            <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           ) : (
@@ -174,8 +165,8 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
             </>
           )}
         </div>
-        <div className="bg-gray-100 border-t-2">
-          <form className="flex items-center p-3 gap-3" onSubmit={handleSubmit}>
+        <div className="bg-gray-100 border-t-2 flex-0">
+          <form className="flex items-center p-3 gap-3 h-full" onSubmit={handleSubmit}>
             <Textarea
               type="text"
               placeholder="Type your message..."
