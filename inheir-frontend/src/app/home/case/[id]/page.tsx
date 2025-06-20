@@ -3,6 +3,7 @@
 import { ChatUI } from "@/lib/components/Chatbot";
 import { CaseData, CaseTabs } from "@/lib/validators/types";
 import { Button, Field, Input, Link, SelectTabData, SelectTabEvent, Spinner, Tab, TabList, Toast, ToastIntent, ToastPosition, ToastTitle, Toaster, useId, useToastController } from "@fluentui/react-components";
+import { InfoRegular } from "@fluentui/react-icons";
 import { Map } from "maplibre-gl";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -106,17 +107,18 @@ export default function Page() {
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ remarks: `Case ${inputStatus}ed successfully` }),
       credentials: "include",
     })
       .then(async (res) => {
         if (res.ok) {
-          const data = await res.json();
+          const respMsg = await res.json();
           setCaseData(
             {
               ...caseData!,
               summary: {
                 ...caseData!.summary,
-                remarks: data.remarks || `Case ${inputStatus}ed successfully`
+                remarks: respMsg || `Case ${inputStatus}ed successfully`
               },
               meta: {
                 ...caseData!.meta,
@@ -470,32 +472,37 @@ export default function Page() {
                     </div>
                   ) : selectedTab === 'gis' ? (
                     <div className="flex flex-col w-full h-full">
-                      <div className="w-full p-4 flex justify-center">
-                        <form className="flex flex-row items-center justify-center gap-4 w-full px-6 py-4 bg-white/90 backdrop-filter backdrop-blur-sm shadow-md rounded-lg z-10 max-w-3xl mx-auto" onSubmit={handleGisSubmit}>
-                          <Field className="w-full">
-                            <Input
-                              type="text"
-                              placeholder="Enter address to analyze location data"
-                              value={gisInput}
-                              onChange={e => setGisInput(e.target.value)}
-                              disabled={gisLoading}
-                              className="focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-                            />
-                          </Field>
-                          <Button
-                            type="submit"
-                            appearance="primary"
-                            className="transition duration-200 shadow-sm hover:shadow-md"
-                            disabled={gisLoading || !gisInput.trim()}
-                          >
-                            {gisLoading ?
-                              <span className="flex justify-around gap-2 px-3">
-                                <Spinner size="extra-tiny" />
-                                <span className="animate-pulse">Analyzing</span>
-                              </span> :
-                              <span className="flex items-center gap-2">Search</span>
-                            }
-                          </Button>
+                      <div className="w-full p-4 flex flex-col justify-center">
+                        <form className="flex flex-col items-center justify-center gap-4 w-full px-6 py-4 bg-white/90 backdrop-filter backdrop-blur-sm shadow-md rounded-lg z-10 max-w-3xl mx-auto" onSubmit={handleGisSubmit}>
+                          <div className="flex flex-row gap-2 w-full">
+                            <Field className="w-full">
+                              <Input
+                                type="text"
+                                placeholder="Enter address to analyze location data"
+                                value={gisInput}
+                                onChange={e => setGisInput(e.target.value)}
+                                disabled={gisLoading}
+                                className="focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                              />
+                            </Field>
+                            <Button
+                              type="submit"
+                              appearance="primary"
+                              className="transition duration-200 shadow-sm hover:shadow-md"
+                              disabled={gisLoading || !gisInput.trim()}
+                            >
+                              {gisLoading ?
+                                <span className="flex justify-around gap-2 px-3">
+                                  <Spinner size="extra-tiny" />
+                                  <span className="animate-pulse">Analyzing</span>
+                                </span> :
+                                <span className="flex items-center gap-2">Search</span>
+                              }
+                            </Button>
+                          </div>
+                          <div className="flex flex-row items-center gap-2 text-gray-600">
+                            <InfoRegular /><p className="text-sm text-gray-400 font-mono font-semibold">Kindly provide the officially government approved address for accurate results</p>
+                          </div>
                         </form>
                       </div>
                       <div className="flex-grow w-full h-0">
