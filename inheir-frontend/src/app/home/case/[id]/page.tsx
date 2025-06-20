@@ -118,7 +118,7 @@ export default function Page() {
               ...caseData!,
               summary: {
                 ...caseData!.summary,
-                remarks: respMsg || `Case ${inputStatus}ed successfully`
+                remarks: respMsg.message || `Case ${inputStatus}ed successfully`
               },
               meta: {
                 ...caseData!.meta,
@@ -188,10 +188,10 @@ export default function Page() {
                 </div>
               ) : caseData && caseData?.meta?.status === 'Open' ? (
                 <div className="flex flex-row gap-x-3">
-                  <Button appearance="primary" size="small" onClick={() => handleCaseStatus("resolve")}>
+                  <Button appearance="primary" size="small" onClick={async () => await handleCaseStatus("resolve")}>
                     <span className="font-bold">Resolve Case</span>
                   </Button>
-                  <Button appearance="secondary" size="small" onClick={() => handleCaseStatus("abort")}>
+                  <Button appearance="secondary" size="small" onClick={async () => await handleCaseStatus("abort")}>
                     <span className="font-bold">Abort Case</span>
                   </Button>
                 </div>
