@@ -376,7 +376,7 @@ export default function Page() {
               <div className="w-full h-20 grid place-items-center bg-gray-100 border-b-2">
                 <TabList selectedValue={selectedTab} onTabSelect={handleTabSelect}>
                   <Tab value={'chatbot'}>AI Assistant</Tab>
-                  <Tab value={'documents'}>Documents Summary</Tab>
+                  {/* <Tab value={'documents'}>Documents Summary</Tab> */}
                   <Tab value={'gis'}>GIS</Tab>
                 </TabList>
               </div>
