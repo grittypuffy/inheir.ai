@@ -13,7 +13,7 @@ bun install
 bun run dev
 ```
 
-The frontend should be accessible at https://localhost:3000/
+The frontend can be viewed at https://localhost:3000/
 
 # License
 
