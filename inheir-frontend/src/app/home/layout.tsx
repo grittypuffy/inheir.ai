@@ -26,6 +26,7 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
   }
 
   const [userName, setUserName] = useState<string>("User");
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const logoutHandler = async () => {
     const res: Response = await fetch('/api/v1/auth/sign_out', {
@@ -57,6 +58,18 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
     if (getItem("username")) {
       setUserName(getItem("username") || "User");
     }
+
+    // Fetch admin status
+    fetch("/api/v1/case/is_admin", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.is_admin) setIsAdmin(true);
+      })
+      .catch(() => setIsAdmin(false));
   }, [])
 
   return (
@@ -97,11 +110,41 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
                 <h1 className="text-lg lg:text-2xl font-semibold">Welcome to Inheir.ai</h1>
                 <span className="text-md lg:text-xl">{userName}</span>
               </div>
-              <div onClick={logoutHandler}>
-                <span className="text-sm lg:text-lg text-red-400 hover:text-red-600 cursor-pointer">
+              <Button
+                appearance="primary"
+                size="medium"
+                className="mb-2 w-full"
+                style={{ minHeight: '40px' }}
+                onClick={() => {
+                  setNavBar(false);
+                  router.push("/home/report");
+                }}
+              >
+                Report Property
+              </Button>
+              {isAdmin && (
+                <Button
+                  appearance="secondary"
+                  size="medium"
+                  className="mb-2 w-full"
+                  style={{ minHeight: '40px' }}
+                  onClick={() => {
+                    setNavBar(false);
+                    router.push("/home/report/dashboard");
+                  }}
+                >
+                  Report Dashboard
+                </Button>
+              )}
+              <button
+                onClick={logoutHandler}
+                className="text-sm lg:text-lg text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded transition-colors flex items-center justify-center gap-2 mt-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 w-full"
+                style={{ minHeight: '40px' }}
+              >
+                <span className="w-full flex items-center justify-center gap-2">
                   Logout <ArrowExit20Regular />
                 </span>
-              </div>
+              </button>
             </div>
           </NavDrawerHeader>
           <NavDrawerBody
