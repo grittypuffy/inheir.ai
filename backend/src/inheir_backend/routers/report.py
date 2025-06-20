@@ -39,7 +39,7 @@ async def create_report(
         raise HTTPException(status_code=500, detail=f"Failed to create report: {str(e)}")
 
 
-@router.get("/")
+@router.get("/all")
 async def get_reports(
     req: Request,
     report: Report

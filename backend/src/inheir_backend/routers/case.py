@@ -157,7 +157,7 @@ async def create_case(
         raise HTTPException(status_code=500, detail=f"Error analyzing location: {str(e)}") 
 
 
-@router.get("/", response_model=CaseMetaResponse)
+@router.get("/history", response_model=CaseMetaResponse)
 async def get_cases(req: Request):
     user_id = config.env.anonymous_user_id
     if req.state.user:
