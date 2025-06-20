@@ -183,7 +183,7 @@ async def get_cases(req: Request):
         doc["created_at"] = doc["created_at"].__str__()
         doc.pop("_id", None)
         cases.append(CaseResponse(**doc)) 
-    cases.sort(reverse=True)
+    cases.sort(key=lambda x: x.created_at, reverse=True)
     cases_dict = {"cases": cases}
     case_response = CaseMetaResponse(**cases_dict)
     return JSONResponse(
