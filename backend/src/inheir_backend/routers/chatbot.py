@@ -20,22 +20,28 @@ class ChatbotRequest(BaseModel):
     query: str
     context: Optional[str] = None
 
-chatbot_system_template = """You are a helpful assistant that answers a query based on provided legal documents, provided legal and supporting documents with relevant law data, if no relevant data say so. Keep your responses concise and relevant."""
+chatbot_system_template = """
+You are a helpful legal assistant that answers a query with relevant law data and worldwide legal regulations, \
+policies and laws, if no data or document is provided, answer using \
+worldwide policies and laws and publicly available knowledge, especially by trying to understand the nationality behind the query.
+to answer based on that country's laws and regulations to maintain fairness.\
+Always aim to help the user as best as you can. Keep your responses concise and relevant."""
 chatbot_user_template = """\
 ### Law:
-{{{{ law }}}}
+{{ law }}
 
 ### Document:
-{{{{ document }}}}
+{{ document }}
 
 ### Supporting document:
-{{{{ supporting_documents }}}}
+{{ supporting_documents }}
 
 ### Query
-{{{{ query }}}}
+{{ query }}
 
 Guidelines:
 - Use plain English.
+- Give generic answers if needed.
 """
 
 chatbot_case_prompt_template = ChatPromptTemplate.from_messages([
@@ -43,16 +49,24 @@ chatbot_case_prompt_template = ChatPromptTemplate.from_messages([
     HumanMessagePromptTemplate.from_template(chatbot_user_template)
 ])
 
-chatbot_law_system_template = """You are a helpful assistant that answers a query based on provided law data, if no relevant data say so. Keep your responses concise and relevant."""
+chatbot_law_system_template = """\
+You are a helpful legal assistant that answers a query with relevant law data \
+and worldwide legal regulations, policies and laws. If no data is provided, answer\
+using worldwide policies and laws and publicly available knowledge, especially by trying\
+to understand the nationality behind the query. \
+to answer based on that country's laws and regulations to maintain fairness.\
+Always aim to help the user as best as you can. Keep your responses concise and relevant.
+"""
 chatbot_law_user_template = """\
 ### Law:
-{{{{ law }}}}
+{{ law }}
 
 ### Query
-{{{{ query }}}}
+{{ query }}
 
 Guidelines:
 - Use plain English.
+- Give generic answers if needed.
 """
 
 chatbot_law_prompt_template = ChatPromptTemplate.from_messages([
@@ -79,7 +93,16 @@ async def chat(
             user_document = await upload_user_file(document, user_id=user_id, case_id=case_id, chat_id=None, case=False)
             document_url = user_document.get("url")
         search_results = search_documents(query)
-        search_result_content = "\n\n".join(search_results)
+        search_result_content = """\
+If no specific legal documents are available, assume globally recognized principles:\
+property can be acquired through inheritance, purchase, or gift.\
+Marital property laws often provide spouses rights to jointly owned property\
+and protection in case of separation or death. Legal systems vary, but fairness\
+and spousal rights are common legal principles.\
+"""
+        if search_results:
+            search_result_content = "\n\n".join(search_results)
+        logging.info("Search results content:", search_results)
         if case_id:
             case_summary_collection = config.db["case_summary"]
             case_summary_doc = await case_summary_collection.find_one(
@@ -90,19 +113,21 @@ async def chat(
                 llm=client,
                 prompt=chatbot_case_prompt_template
             )
+            logging.info("Chain:", chain)
             chain_info = {
                 "law": search_result_content,
-                "document": "",
-                "supporting_documents": "",
+                "document": "No documents provided, use general knowledge",
+                "supporting_documents": "No documents provided, use general knowledge",
                 "query": query
             }
             if case_summary_doc is not None:
                 chain_info = {
                     "law": search_result_content,
-                    "document": case_summary_doc.get("document_content") or "",
-                    "supporting_documents": case_summary_doc.get("supporting_document_content") or "",
+                    "document": case_summary_doc.get("document_content") or "No documents provided, use general knowledge",
+                    "supporting_documents": case_summary_doc.get("supporting_document_content") or "No documents provided, use general knowledge",
                     "query": query
                 }
+            logging.info("Chain info:", chain_info)
             response = chain.invoke(chain_info)
             chat_history_doc = {
                 "query": {

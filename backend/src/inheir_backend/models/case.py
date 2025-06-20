@@ -39,14 +39,14 @@ class CaseResponse(BaseModel):
 class CaseMetaResponse(BaseModel):
     cases: List[CaseResponse]
     status: str = "success"
-    success: str = True
+    success: bool = True
     reason: Optional[str] = None
 
 
 class ChatMetaResponse(BaseModel):
     chats: List[Chat]
     status: str = "success"
-    success: str = True
+    success: bool = True
     reason: Optional[str] = None
 
 

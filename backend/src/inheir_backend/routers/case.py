@@ -70,9 +70,9 @@ case_summary_prompt_template = ChatPromptTemplate.from_messages([
 async def create_case(
     req: Request,
     document: UploadFile,
-    supporting_documents: Optional[List[UploadFile]],
-    title: Optional[str] = "",
-    address: Optional[str] = ""
+    supporting_documents: Optional[List[UploadFile]] = None,
+    title: Optional[str] = "Title",
+    address: Optional[str] = None
 ):
     logging.info(req.state.user)
     user_id = config.env.anonymous_user_id
@@ -91,10 +91,11 @@ async def create_case(
     document_url = user_document.get("url")
 
     supporting_documents_urls = []
-    for supporting_document in supporting_documents:
-        user_supporting_document = await upload_user_file(supporting_document, user_id=user_id, case_id=case_id, chat_id=None, case=True)
-        supporting_document_url = user_supporting_document.get("url")
-        supporting_documents_urls.append(supporting_document_url)
+    if supporting_documents is not None:
+        for supporting_document in supporting_documents:
+            user_supporting_document = await upload_user_file(supporting_document, user_id=user_id, case_id=case_id, chat_id=None, case=True)
+            supporting_document_url = user_supporting_document.get("url")
+            supporting_documents_urls.append(supporting_document_url)
     
     document_content = process_upload_document(document_url)
     if document_content is None:
@@ -154,7 +155,7 @@ async def create_case(
 
     except Exception as e:
         logging.error(e)
-        raise HTTPException(status_code=500, detail=f"Error analyzing location: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}") 
 
 
 @router.get("/history", response_model=CaseMetaResponse)
@@ -214,12 +215,27 @@ async def get_summary(req: Request, case_id: str):
             {"user_id": user_id, "_id": ObjectId(case_id)},
             {"title": 1, "status": 1, "created_at": 1}
         )
+        if not case_doc:
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "message": "Case not found"
+                }
+            )
         case_doc["created_at"] = case_doc["created_at"].__str__()
         case_doc["case_id"] = case_doc["_id"].__str__()
         case_doc.pop("_id", None)
         case_summary_doc = await case_summary_collection.find_one(
             {"case_id": case_id}
         )
+        if not case_summary_doc:
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "message": "Case summary not found"
+                }
+            )
+
         case_summary_doc.pop("_id")
         case_meta_dict = CaseResponse(**case_doc)
         case_summary_dict = CaseSummary(**case_summary_doc)
@@ -322,6 +338,7 @@ async def get_chats(req: Request, case_id: str):
         doc["response"] = ChatData(**response)
         chats.append(Chat(**doc)) 
     chats_dict = {"chats": chats}
+
     chat_response = ChatMetaResponse(**chats_dict)
     return JSONResponse(
         status_code=200,
