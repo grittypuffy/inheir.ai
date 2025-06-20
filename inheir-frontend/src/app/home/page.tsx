@@ -82,7 +82,7 @@ export default function Page() {
               <Button
                 appearance="primary"
                 onClick={() => {
-                  ToastMessage({ message: `Navigating to case ${caseItem.title}`, description: "Please wait! redirecting..." }, "info", "bottom");
+                  ToastMessage({ message: `Navigating to case ${caseItem.title}`, description: "Please wait! redirecting..." }, "info");
                   setTimeout(() => router.push(`/home/case/${caseItem.case_id}`), 500);
                 }}
                 className="bg-blue-600 hover:bg-blue-700 transition-colors"
