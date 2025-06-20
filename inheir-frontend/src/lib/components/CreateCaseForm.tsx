@@ -9,6 +9,7 @@ import {
   useRestoreFocusTarget,
   useToastController
 } from "@fluentui/react-components";
+import { AddCircleRegular } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { isMobileDevice } from "../utils";
@@ -146,9 +147,9 @@ export const CreateCase = () => {
       }
     }}>
       <DialogTrigger disableButtonEnhancement>
-        <Button appearance="primary" className="w-full" {...restoreFocusTarget} onClick={() => setIsDialogOpen(true)}>
+        <Button appearance="primary" {...restoreFocusTarget} onClick={() => setIsDialogOpen(true)}>
           <span className="flex items-center gap-2">
-            <span>Create Case</span>
+            <AddCircleRegular /><span>Create Case</span>
           </span>
         </Button>
       </DialogTrigger>
