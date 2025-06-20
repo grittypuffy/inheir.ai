@@ -128,8 +128,8 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
 
   return (
     <>
-      <div className="flex flex-col w-full">
-        <div className="overflow-y-auto p-4" style={{ height: "calc(100vh - 70px)", scrollBehavior: "smooth" }} ref={(el) => {
+      <div className="flex flex-col w-full h-full">
+        <div className="flex-1 overflow-y-auto p-4" style={{ scrollBehavior: "smooth" }} ref={(el) => {
           if (el && (chatHistory.length > 0 || isFetching)) {
             el.scrollTop = el.scrollHeight;
           }

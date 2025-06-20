@@ -380,7 +380,7 @@ export default function Page() {
                   <Tab value={'gis'}>GIS</Tab>
                 </TabList>
               </div>
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-full">
                 {isLoading ? (
                   <div className="flex items-center justify-center w-full h-full">
                     <p className="text-md text-gray-500">Loading...</p>
