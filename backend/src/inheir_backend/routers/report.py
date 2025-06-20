@@ -43,11 +43,10 @@ async def create_report(
 async def get_reports(
     req: Request
 ):
-
     if not req.state.user:
             raise HTTPException(status_code=404, detail=f"Not found")
     user_role = req.state.user.get("role")
-    if user_role is not "Admin":
+    if user_role != "Admin":
         raise HTTPException(status_code=404, detail=f"Not found")   
 
     report_collection = config.db['report']
