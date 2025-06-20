@@ -54,7 +54,7 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
       setIsPageLoading(false);
     }
 
-    if (getItem("fullName")) {
+    if (getItem("username")) {
       setUserName(getItem("username") || "User");
     }
   }, [])

@@ -173,7 +173,6 @@ const AuthForm = () => {
     setTimeout(async () => {
       if (validateFormData()) {
         ToastMessage({ message: 'Signing Up..', description: '' }, 'info');
-        console.log(formData)
         const res: Response = await fetch('/api/v1/auth/sign_up', {
           method: 'POST',
           headers: {

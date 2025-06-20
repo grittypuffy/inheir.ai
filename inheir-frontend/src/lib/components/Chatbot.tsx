@@ -74,7 +74,6 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
       if (res.ok) {
         const apiData = await res.json();
         const data: ChatHistoryResponse = apiData.chats;
-        console.log('Fetched chat history:', data);
         const newChatHistory: Chat[] = [];
         if (data) {
           data.chats.forEach((chat: ChatResponse) => {

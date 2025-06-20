@@ -28,10 +28,8 @@ export const Cases = () => {
   useEffect(() => {
     getCases()
       .then((fetchedCases) => {
-        console.log('Fetched cases:', fetchedCases.cases);
         if (Array.isArray(fetchedCases.cases)) {
           setCases(fetchedCases.cases);
-          console.log('Fetched cases:', fetchedCases);
         } else {
           setCases([]);
         }
