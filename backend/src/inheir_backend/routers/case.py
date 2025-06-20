@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import datetime
-from fastapi import APIRouter, Request, UploadFile
+from fastapi import APIRouter, Request, UploadFile, Body
 from fastapi.responses import JSONResponse
 from ..config import AppConfig, get_config
 from ..models.case import CaseDetails, CaseSummary, CaseMetaResponse
@@ -160,7 +160,7 @@ async def create_case(
 
 @router.get("/history", response_model=CaseMetaResponse)
 async def get_cases(req: Request):
-    user_id = config.env.anonymous_user_id
+    user_id = None
     if req.state.user:
         user_id = req.state.user.get("user_id")
     if not user_id:
@@ -196,7 +196,7 @@ async def get_cases(req: Request):
         
 @router.get("/{case_id}", response_model=Case)
 async def get_summary(req: Request, case_id: str):
-    user_id = config.env.anonymous_user_id
+    user_id = None
     if req.state.user:
         user_id = req.state.user.get("user_id")
     if not user_id:
@@ -250,8 +250,8 @@ async def get_summary(req: Request, case_id: str):
         )
 
 @router.post("/{case_id}/resolve")
-async def resolve_case(req: Request, case_id: str, remarks: Remarks):
-    user_id = config.env.anonymous_user_id
+async def resolve_case(req: Request, case_id: str, remarks: Remarks = Body(default=Remarks())):
+    user_id = None
     if req.state.user:
         user_id = req.state.user.get("user_id")
     if not user_id:
@@ -273,17 +273,21 @@ async def resolve_case(req: Request, case_id: str, remarks: Remarks):
         case_summary_collection = config.db['case_summary']
         case_summary_doc = await case_summary_collection.find_one_and_update(
             {"case_id": case_id},
-            {"$set": {"remarks": remarks}}
+            {"$set": {"remarks": remarks.remarks}}
         )
 
         return JSONResponse(
-            status_code=200
+            status_code=200,
+            content={
+                "message": "Successfully resolved",
+                "success": True
+            }
         )
 
 
 @router.post("/{case_id}/abort")
-async def abort_case(req: Request, case_id: str, remarks: Remarks):
-    user_id = config.env.anonymous_user_id
+async def abort_case(req: Request, case_id: str, remarks: Remarks = Body(default=Remarks())):
+    user_id = None
     if req.state.user:
         user_id = req.state.user.get("user_id")
     if not user_id:
@@ -304,11 +308,15 @@ async def abort_case(req: Request, case_id: str, remarks: Remarks):
         case_summary_collection = config.db['case_summary']
         case_summary_doc = await case_summary_collection.find_one_and_update(
             {"case_id": case_id},
-            {"$set": {"remarks": remarks}}
+            {"$set": {"remarks": remarks.remarks}}
         )
 
         return JSONResponse(
-            status_code=200
+            status_code=200,
+            content={
+                "message": "Successfully resolved",
+                "success": True
+            }
         )
 
 @router.get("/{case_id}/chats", response_model=ChatMetaResponse)
