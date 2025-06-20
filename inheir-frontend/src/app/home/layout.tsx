@@ -3,8 +3,8 @@
 import AppContainer from "@/lib/components/AppContainer";
 import { Cases } from "@/lib/components/Cases";
 import { clearItems, getItem, isSignedOut } from "@/lib/utils";
-import { Hamburger, NavDrawer, NavDrawerBody, NavDrawerFooter, NavDrawerHeader, NavSectionHeader, Toast, Toaster, ToastIntent, ToastPosition, ToastTitle, useId, useToastController } from "@fluentui/react-components";
-import { ArrowExit20Regular } from "@fluentui/react-icons";
+import { Button, Hamburger, NavDrawer, NavDrawerBody, NavDrawerFooter, NavDrawerHeader, NavSectionHeader, Toast, Toaster, ToastIntent, ToastPosition, ToastTitle, useId, useToastController } from "@fluentui/react-components";
+import { ArrowExit20Regular, HomeFilled } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { setTimeout } from "timers";
@@ -54,7 +54,7 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
       setIsPageLoading(false);
     }
 
-    if (getItem("username")) {
+    if (getItem("fullName")) {
       setUserName(getItem("username") || "User");
     }
   }, [])
@@ -76,13 +76,22 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
             className="border-b-2 border-r-2"
           >
             <div className="flex flex-col my-5 gap-y-3 flex-nowrap">
-              <div>
+              <div className="flex flex-row justify-between">
                 <Hamburger
                   size="medium"
                   appearance="primary"
                   shape="circular"
                   onClick={() => setNavBar(!isNavBar)}
                 />
+                <Button
+                  onClick={() => router.push("/home")}
+                  size="large"
+                  shape="circular"
+                >
+                  <span className="flex items-center gap-x-2">
+                    Home <HomeFilled fontSize={18} />
+                  </span>
+                </Button>
               </div>
               <div>
                 <h1 className="text-lg lg:text-2xl font-semibold">Welcome to Inheir.ai</h1>
