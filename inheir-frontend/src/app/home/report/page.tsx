@@ -2,7 +2,7 @@
 
 import { Field, Input, Textarea, Toast, Toaster, ToastIntent, ToastPosition, ToastTitle, useId, useToastController } from "@fluentui/react-components";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const SubmitReport = () => {
   const router = useRouter();
