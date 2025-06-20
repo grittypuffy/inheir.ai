@@ -1,30 +1,51 @@
-"use client"
-import { setItems } from "@/lib/utils";
-import { SignInSchema, SignUpSchema } from "@/lib/validators/schema";
-import { SignUpData } from "@/lib/validators/types";
-import type { CheckboxOnChangeData, InputOnChangeData, SelectTabData, SelectTabEvent, TabValue, ToastIntent, ToastPosition } from "@fluentui/react-components";
-import { Button, Checkbox, Field, Input, Spinner, Tab, TabList, Toast, ToastBody, Toaster, ToastTitle, useId, useToastController } from "@fluentui/react-components";
-import { EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
-import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { setTimeout } from "timers";
-import * as v from "valibot";
-
+'use client';
+import { setItems } from '@/lib/utils';
+import { SignInSchema, SignUpSchema } from '@/lib/validators/schema';
+import { SignUpData } from '@/lib/validators/types';
+import type {
+  CheckboxOnChangeData,
+  InputOnChangeData,
+  SelectTabData,
+  SelectTabEvent,
+  TabValue,
+  ToastIntent,
+  ToastPosition,
+} from '@fluentui/react-components';
+import {
+  Button,
+  Checkbox,
+  Field,
+  Input,
+  Spinner,
+  Tab,
+  TabList,
+  Toast,
+  ToastBody,
+  Toaster,
+  ToastTitle,
+  useId,
+  useToastController,
+} from '@fluentui/react-components';
+import { EyeOffRegular, EyeRegular } from '@fluentui/react-icons';
+import { useRouter } from 'next/navigation';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { setTimeout } from 'timers';
+import * as v from 'valibot';
 
 const AuthForm = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [formType, setFormType] = useState<TabValue>('signup');
   const [formData, setFormData] = useState<SignUpData>({
-    username: "",
-    email: "",
-    password: "",
-    full_name: "",
+    username: '',
+    email: '',
+    password: '',
+    full_name: '',
   });
 
   const [validMsg, setValidMsg] = useState<{ [key: string]: string }>({
-    name: "",
-    email: "",
-    password: ""
+    name: '',
+    email: '',
+    password: '',
   });
 
   const [focusState, setFocusState] = useState(false);
@@ -51,49 +72,52 @@ const AuthForm = () => {
         title="Show Password"
       />
     );
-  }
+  };
 
   const resetFormData = () => {
     setFormData({
-      username: "",
-      email: "",
-      password: "",
-      full_name: "",
+      username: '',
+      email: '',
+      password: '',
+      full_name: '',
     });
     setValidMsg({
-      username: "",
-      email: "",
-      password: "",
-      full_name: "",
+      username: '',
+      email: '',
+      password: '',
+      full_name: '',
     });
-  }
+  };
 
   const resetValidMsg = () => {
     setValidMsg({
-      username: "",
-      email: "",
-      password: "",
-      full_name: "",
+      username: '',
+      email: '',
+      password: '',
+      full_name: '',
     });
-  }
+  };
 
-  const toasterId = useId("toaster-id");
+  const toasterId = useId('toaster-id');
   const { dispatchToast } = useToastController(toasterId);
-  const ToastMessage = ({ message, description }: { message: string, description?: string | undefined }, intent: ToastIntent, position: ToastPosition = "bottom-end") => {
+  const ToastMessage = (
+    { message, description }: { message: string; description?: string | undefined },
+    intent: ToastIntent,
+    position: ToastPosition = 'bottom-end'
+  ) => {
     dispatchToast(
       <>
         <Toast>
           <ToastTitle className="text-lg font-semibold">{message}</ToastTitle>
-          <ToastBody className="text-sm">
-            {description}
-          </ToastBody>
+          <ToastBody className="text-sm">{description}</ToastBody>
         </Toast>
       </>,
       {
         intent,
         position,
-      });
-  }
+      }
+    );
+  };
 
   const onTabHandler = (_: SelectTabEvent, data: SelectTabData) => {
     setFormType(data.value);
@@ -106,28 +130,28 @@ const AuthForm = () => {
   };
 
   const validateFormData = () => {
-    const res = v.safeParse(formType === "signup" ? SignUpSchema : SignInSchema, formData);
+    const res = v.safeParse(formType === 'signup' ? SignUpSchema : SignInSchema, formData);
     const newValidMsg: { [key: string]: string } = {
-      username: "",
-      email: "",
-      password: "",
-      full_name: "",
+      username: '',
+      email: '',
+      password: '',
+      full_name: '',
     };
 
     if (!res.success) {
-      res.issues.forEach(issue => {
+      res.issues.forEach((issue) => {
         if (issue.path) {
           issue.path.forEach((path) => {
-            if (path.key === "username") {
+            if (path.key === 'username') {
               newValidMsg.username = issue.message;
             }
-            if (path.key === "email") {
+            if (path.key === 'email') {
               newValidMsg.email = issue.message;
             }
-            if (path.key === "password") {
+            if (path.key === 'password') {
               newValidMsg.password = issue.message;
             }
-            if (path.key === "full_name") {
+            if (path.key === 'full_name') {
               newValidMsg.full_name = issue.message;
             }
           });
@@ -139,81 +163,108 @@ const AuthForm = () => {
       email: newValidMsg.email,
       password: newValidMsg.password,
       full_name: newValidMsg.full_name,
-    }))
+    }));
     return res.success;
-  }
+  };
 
   const signUpHandler = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     setIsLoading(true);
     setTimeout(async () => {
       if (validateFormData()) {
-        ToastMessage({ message: "Signing Up..", description: "" }, "info")
+        ToastMessage({ message: 'Signing Up..', description: '' }, 'info');
+        console.log(formData)
         const res: Response = await fetch('/api/v1/auth/sign_up', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(formData),
         });
 
         if (!res.ok) {
-          ToastMessage({ message: "Sign Up Failed", description: "Incorrect credentials! Try again." }, "error");
+          ToastMessage(
+            { message: 'Sign Up Failed', description: 'Incorrect credentials! Try again.' },
+            'error'
+          );
         } else {
-          ToastMessage({ message: "Sign Up Successful", description: "Redirecting..." }, "success");
-          setTimeout(() => {
-            setItems([
-              { key: "username", value: formData.username },
-              { key: "full_name", value: formData.full_name },
-              { key: "email", value: formData.email },
-            ]);
-            router.push("/home");
-          }, 400);
+          ToastMessage({ message: 'Sign Up Successful', description: 'Redirecting...' }, 'success');
+          const res: Response = await fetch('/api/v1/auth/sign_in', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: formData.username, password: formData.password }),
+            credentials: 'include'
+          });
+          if (!res.ok) {
+            router.push('/');
+          } else {
+            setTimeout(() => {
+              setItems([
+                { key: 'username', value: formData.username },
+                { key: 'full_name', value: formData.full_name },
+                { key: 'email', value: formData.email },
+              ]);
+
+              router.push('/home');
+            }, 800);
+          }
         }
         setIsLoading(false);
         return;
       }
       setIsLoading(false);
-      ToastMessage({ message: "Sign Up Failed", description: "Improper data! Please follow the format specified" }, "error");
-    }, 500)
-  }
+      ToastMessage(
+        {
+          message: 'Sign Up Failed',
+          description: 'Improper data! Please follow the format specified',
+        },
+        'error'
+      );
+    }, 500);
+  };
 
   const signInHandler = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setTimeout(async () => {
       if (validateFormData()) {
-        ToastMessage({ message: "Signing In.." }, "info")
+        ToastMessage({ message: 'Signing In..' }, 'info');
         const res: Response = await fetch('/api/v1/auth/sign_in', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             username: formData.username,
             password: formData.password,
           }),
-          credentials: "include"
+          credentials: 'include',
         });
 
         if (!res.ok) {
-          ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
+          ToastMessage(
+            { message: 'Sign In Failed', description: 'Incorrect credentials! Try again.' },
+            'error'
+          );
         } else {
-          ToastMessage({ message: "Sign In Successful", description: "Redirecting..." }, "success");
+          ToastMessage({ message: 'Sign In Successful', description: 'Redirecting...' }, 'success');
           setTimeout(() => {
-            setItems([
-              { key: "username", value: formData.username },
-            ]);
-            router.push("/home");
+            setItems([{ key: 'username', value: formData.username }]);
+            router.push('/home');
           }, 400);
         }
         setIsLoading(false);
         return;
       }
       setIsLoading(false);
-      ToastMessage({ message: "Sign In Failed", description: "Incorrect credentials! Try again." }, "error");
+      ToastMessage(
+        { message: 'Sign In Failed', description: 'Incorrect credentials! Try again.' },
+        'error'
+      );
     }, 500);
-  }
+  };
 
   const validateUserName = () => {
     setIsChecking(true);
@@ -227,21 +278,24 @@ const AuthForm = () => {
         const res: Response = await fetch(`/api/v1/auth/${formData.username}/valid`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
         });
 
         if (!res.ok) {
-          setValidMsg(prev => ({ ...prev, username: "Username is already taken" }));
+          setValidMsg((prev) => ({ ...prev, username: 'Username is already taken' }));
           setIsChecking(false);
           return;
         }
-        setValidMsg(prev => ({ ...prev, username: `Username "${formData.username}" is available` }));
+        setValidMsg((prev) => ({
+          ...prev,
+          username: `Username "${formData.username}" is available`,
+        }));
         setIsValidUserName(true);
         setIsChecking(false);
       }, 500);
     }
-  }
+  };
 
   useEffect(() => {
     if (focusState) {
@@ -258,7 +312,8 @@ const AuthForm = () => {
           <Tab value={`signin`}>Sign In</Tab>
         </TabList>
       </div>
-      <div className="flex flex-col w-full p-6 items-center gap-y-5"
+      <div
+        className="flex flex-col w-full p-6 items-center gap-y-5"
         onFocus={() => onFocusChange(true)}
         onBlur={() => onFocusChange(false)}
       >
@@ -270,7 +325,7 @@ const AuthForm = () => {
             >
               <Field
                 label="Username"
-                validationState={isValidUserName ? "success" : validMsg.username ? "error" : "none"}
+                validationState={isValidUserName ? 'success' : validMsg.username ? 'error' : 'none'}
                 validationMessage={validMsg.username}
                 className="w-full"
               >
@@ -278,11 +333,11 @@ const AuthForm = () => {
                   value={formData.username}
                   appearance="underline"
                   onChange={(_: any, data: InputOnChangeData) => {
-                    setFormData(prev => ({ ...prev, username: data.value }))
+                    setFormData((prev) => ({ ...prev, username: data.value }));
                   }}
                   disabled={isValidUserName}
                   className="w-full"
-                  style={{ minWidth: "200px" }}
+                  style={{ minWidth: '200px' }}
                 />
               </Field>
               <Button
@@ -291,100 +346,98 @@ const AuthForm = () => {
                 onClick={validateUserName}
                 disabled={!formData.username.length || isChecking}
               >
-                {isChecking ? (<Spinner size="extra-small" />) : isValidUserName ? "Change Username" : "Check Username"}
+                {isChecking ? (
+                  <Spinner size="extra-small" />
+                ) : isValidUserName ? (
+                  'Change Username'
+                ) : (
+                  'Check Username'
+                )}
               </Button>
             </form>
-            {isValidUserName &&
-              (
-                <form
-                  onSubmit={signUpHandler}
-                  className="flex flex-col gap-3 w-full max-w-md"
+            {isValidUserName && (
+              <form onSubmit={signUpHandler} className="flex flex-col gap-3 w-full max-w-md">
+                <Field
+                  label="Full Name"
+                  validationState={validMsg.full_name ? 'error' : 'none'}
+                  validationMessage={validMsg.full_name}
+                  className="w-full"
                 >
-                  <Field
-                    label="Full Name"
-                    validationState={validMsg.full_name ? "error" : "none"}
-                    validationMessage={validMsg.full_name}
-                    className="w-full"
-                  >
-                    <Input
-                      value={formData.full_name}
-                      appearance="underline"
-                      onChange={(_: any, data: InputOnChangeData) => {
-                        setFormData(prev => ({ ...prev, full_name: data.value }))
-                      }}
-                      disabled={isLoading}
-                      className="w-full"
-                      style={{ minWidth: "200px" }}
-                    />
-                  </Field>
-                  <Field
-                    label="Email"
-                    validationState={validMsg.email ? "error" : "none"}
-                    validationMessage={validMsg.email}
-                    className="w-full"
-                  >
-                    <Input
-                      type="email"
-                      value={formData.email}
-                      appearance="underline"
-                      onChange={(_: any, data: InputOnChangeData) => {
-                        setFormData(prev => ({ ...prev, email: data.value }))
-                      }}
-                      disabled={isLoading}
-                      className="w-full"
-                      style={{ minWidth: "200px" }}
-                    />
-                  </Field>
-                  <Field
-                    label="Password"
-                    validationState={validMsg.password ? "error" : "none"}
-                    validationMessage={validMsg.password}
-                    className="w-full"
-                  >
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      contentAfter={EyeToggleButton(showPassword)}
-                      value={formData.password}
-                      appearance="underline"
-                      onChange={(_: any, data: InputOnChangeData) => {
-                        setFormData(prev => ({ ...prev, password: data.value }))
-                      }}
-                      disabled={isLoading}
-                      className="w-full"
-                      style={{ minWidth: "200px" }}
-                    />
-                  </Field>
-                  <Checkbox
-                    label="This website requires cookies to function properly. I accept third-party cookies."
-                    labelPosition="after"
-                    onChange={(_: ChangeEvent<HTMLInputElement>, data: CheckboxOnChangeData) => {
-                      if (data.checked) {
-                        setIsPolicyAccepted(true);
-                      } else {
-                        setIsPolicyAccepted(false);
-                      }
+                  <Input
+                    value={formData.full_name}
+                    appearance="underline"
+                    onChange={(_: any, data: InputOnChangeData) => {
+                      setFormData((prev) => ({ ...prev, full_name: data.value }));
                     }}
+                    disabled={isLoading}
+                    className="w-full"
+                    style={{ minWidth: '200px' }}
                   />
-                  <Button
-                    type="submit"
-                    className="w-full max-w-xs mx-auto hover:shadow-md"
-                    disabled={!isPolicyAccepted || isLoading}
-                  >
-                    {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
-                  </Button>
-                </form>
-              )
-            }
+                </Field>
+                <Field
+                  label="Email"
+                  validationState={validMsg.email ? 'error' : 'none'}
+                  validationMessage={validMsg.email}
+                  className="w-full"
+                >
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    appearance="underline"
+                    onChange={(_: any, data: InputOnChangeData) => {
+                      setFormData((prev) => ({ ...prev, email: data.value }));
+                    }}
+                    disabled={isLoading}
+                    className="w-full"
+                    style={{ minWidth: '200px' }}
+                  />
+                </Field>
+                <Field
+                  label="Password"
+                  validationState={validMsg.password ? 'error' : 'none'}
+                  validationMessage={validMsg.password}
+                  className="w-full"
+                >
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    contentAfter={EyeToggleButton(showPassword)}
+                    value={formData.password}
+                    appearance="underline"
+                    onChange={(_: any, data: InputOnChangeData) => {
+                      setFormData((prev) => ({ ...prev, password: data.value }));
+                    }}
+                    disabled={isLoading}
+                    className="w-full"
+                    style={{ minWidth: '200px' }}
+                  />
+                </Field>
+                <Checkbox
+                  label="This website requires cookies to function properly. I accept third-party cookies."
+                  labelPosition="after"
+                  onChange={(_: ChangeEvent<HTMLInputElement>, data: CheckboxOnChangeData) => {
+                    if (data.checked) {
+                      setIsPolicyAccepted(true);
+                    } else {
+                      setIsPolicyAccepted(false);
+                    }
+                  }}
+                />
+                <Button
+                  type="submit"
+                  className="w-full max-w-xs mx-auto hover:shadow-md"
+                  disabled={!isPolicyAccepted || isLoading}
+                >
+                  {isLoading ? <Spinner size="extra-small" /> : 'Submit'}
+                </Button>
+              </form>
+            )}
           </>
         ) : (
           <div className="flex flex-col w-full max-w-md">
-            <form
-              onSubmit={signInHandler}
-              className="flex flex-col gap-y-3 w-full items-center"
-            >
+            <form onSubmit={signInHandler} className="flex flex-col gap-y-3 w-full items-center">
               <Field
                 label="Username"
-                validationState={isValidUserName ? "success" : validMsg.username ? "error" : "none"}
+                validationState={isValidUserName ? 'success' : validMsg.username ? 'error' : 'none'}
                 validationMessage={validMsg.username}
                 className="w-full"
               >
@@ -393,30 +446,30 @@ const AuthForm = () => {
                   value={formData.username}
                   appearance="underline"
                   onChange={(_: any, data: InputOnChangeData) => {
-                    setFormData(prev => ({ ...prev, username: data.value }))
+                    setFormData((prev) => ({ ...prev, username: data.value }));
                   }}
                   disabled={isLoading}
                   className="w-full"
-                  style={{ minWidth: "200px" }}
+                  style={{ minWidth: '200px' }}
                 />
               </Field>
               <Field
                 label="Password"
-                validationState={validMsg.password ? "error" : "none"}
+                validationState={validMsg.password ? 'error' : 'none'}
                 validationMessage={validMsg.password}
                 className="w-full"
               >
                 <Input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   contentAfter={EyeToggleButton(showPassword)}
                   value={formData.password}
                   appearance="underline"
                   onChange={(_: any, data: InputOnChangeData) => {
-                    setFormData(prev => ({ ...prev, password: data.value }))
+                    setFormData((prev) => ({ ...prev, password: data.value }));
                   }}
                   disabled={isLoading}
                   className="w-full"
-                  style={{ minWidth: "200px" }}
+                  style={{ minWidth: '200px' }}
                 />
               </Field>
               <Checkbox
@@ -435,7 +488,7 @@ const AuthForm = () => {
                 className="w-full max-w-xs hover:shadow-md"
                 disabled={!isPolicyAccepted || isLoading}
               >
-                {isLoading ? (<Spinner size="extra-small" />) : "Submit"}
+                {isLoading ? <Spinner size="extra-small" /> : 'Submit'}
               </Button>
             </form>
           </div>
@@ -443,6 +496,6 @@ const AuthForm = () => {
       </div>
     </div>
   );
-}
+};
 
 export default AuthForm;

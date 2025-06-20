@@ -1,0 +1,24 @@
+name: Build the frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker image for Frontend
+      run: |
+        docker build -t inheir-frontend:latest .
