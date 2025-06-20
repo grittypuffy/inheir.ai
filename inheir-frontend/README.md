@@ -111,7 +111,7 @@ bun run start
 For production deployments using Docker:
 
 ```bash
-docker build -t inheir-frontend:production --build-arg NODE_ENV=production .
+docker build -t inheir-frontend:production --build-arg NODE_ENV=production NEXT_PUBLIC_BACKEND_URL=https://domain.tld .
 docker run -p 3000:3000 inheir-frontend:production
 ```
 
