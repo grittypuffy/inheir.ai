@@ -175,7 +175,7 @@ async def get_cases(req: Request):
     cursor = case_details_collection.find(
         {"user_id": user_id},
         {"_id": 1, "title": 1, "status": 1, "created_at": 1}
-    ).sort("created_at", -1)
+    )
     cases = []
     async for doc in cursor:
         doc["_id"] = doc["_id"].__str__()
@@ -183,6 +183,7 @@ async def get_cases(req: Request):
         doc["created_at"] = doc["created_at"].__str__()
         doc.pop("_id", None)
         cases.append(CaseResponse(**doc)) 
+    cases.sort(reverse=True)
     cases_dict = {"cases": cases}
     case_response = CaseMetaResponse(**cases_dict)
     return JSONResponse(
