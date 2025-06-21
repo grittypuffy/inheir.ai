@@ -256,6 +256,15 @@ cp backend/.env.sample backend/.env
 
 For information regarding deployment of InHeir.AI on Azure, please check out [our guide](./deployment/README.md) for it which covers dependencies, process and troubleshooting.
 
+# Try
+
+We have a demo running at https://inheir.plumespaces.com
+
+To access as an administrator to test the dashboard for property reports, use these credentials:
+
+username: admin
+password: admin
+
 # Team
 
 - **Keerthana Rajesh Kumar**:
