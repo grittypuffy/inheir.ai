@@ -3,11 +3,5 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-python-multipart
-azure-storage-blob
-azure-ai-formrecognizer
-azure-search-documents
-langchain
-langchain-openai
 motor
-python-dotenv
+azure-storage-blob
