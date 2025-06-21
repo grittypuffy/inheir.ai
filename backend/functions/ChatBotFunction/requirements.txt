@@ -11,3 +11,6 @@ langchain
 langchain-openai
 motor
 python-dotenv
+pydantic-settings
+langchain-openai
+langchain-community
