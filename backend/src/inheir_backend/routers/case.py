@@ -66,6 +66,19 @@ case_summary_prompt_template = ChatPromptTemplate.from_messages([
 ])
 
 
+@router.get("/is_admin")
+async def is_admin(req: Request):
+    user = req.state.user
+    is_admin = False
+    if user and user.get("role") == "Admin":
+        is_admin = True
+    return JSONResponse(
+        status_code=200,
+        content={"is_admin": is_admin}
+    )
+
+
+
 @router.post("/create")
 async def create_case(
     req: Request,

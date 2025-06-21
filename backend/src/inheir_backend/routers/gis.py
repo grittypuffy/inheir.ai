@@ -104,7 +104,6 @@ async def analyze_location(request: LocationRequest) -> Dict[str, Any]:
         logging.info(response)
         # Extract the JSON response from the model's output
         analysis_result = response.choices[0].message.content
-        print(analysis_result)
         # Parse the JSON string into a dictionary
         result_dict = json.loads(analysis_result)
         
