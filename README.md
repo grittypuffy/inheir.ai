@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/Genspark-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black">
     <img src="https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white">
     <img src="https://img.shields.io/badge/Microsoft-0078D4?style=for-the-badge&logo=microsoft&logoColor=white">
-    <h1>InHeir.AI: Smart and secure property dispute management, at your fingertips</h1>
+    <img src="./assets/cover_image.jpg" alt="InHeir.AI Cover Image">
     <a href="./assets/presentation.pdf"> <img src="https://cdn0.iconfinder.com/data/icons/logos-microsoft-office-365/128/Microsoft_Office-04-512.png" width=30 />
     </a>
     &nbsp;&nbsp;&nbsp;
@@ -22,10 +22,9 @@
 InHeir.AI is an intelligent and secure legal tech platform developed to streamline property dispute management and analysis legal professionals and local communities. By harnessing the capabilities of large language models (LLMs) and principles of privacy, the solution stands to ensuring data privacy, security and accuracy by adhering to responsible AI practices while ensuring responses are backed by established legal procedures. InHeir.AI aims to serve globalized requirements by providing a modular platform that can support tailored and updated legal establishments for catering to different needs beyond legal institutions.
 
 > NOTE: Demo instance is available at https://inheir.plumespaces.com
-> To access as an administrator to test the dashboard for property reports, use > these credentials:
+> To access as an administrator to test the dashboard for property reports, use these credentials:
 > username: admin
 > password: admin
-> 
 
 # Table of Contents
 
@@ -207,11 +206,6 @@ InHeir.AI follows a hybrid approach towards API architecture in the sense it sup
   - **Azure App Service** for containerized, scalable and reliable deployment of web services and management of API server.
 
 # Screenshots
-| InHeir.AI Screenshots |
-| --- |
-| ![InHeir.AI Cover Image](./assets/cover_image.jpg) |
-
-
 | Home Page | User Dashboard |
 | --- | --- |
 | ![Dashboard](./assets/home_page.jpg) | ![User Dashboard](./assets/user_dashboard.jpg) |
