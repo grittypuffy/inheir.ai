@@ -147,9 +147,9 @@ export default function ReportDashboard() {
               <TableRow>
                 <TableHeaderCell>Name</TableHeaderCell>
                 <TableHeaderCell>Address</TableHeaderCell>
-                <TableHeaderCell className="w-[28%]">Report</TableHeaderCell>
+                <TableHeaderCell className="w-[20%]">Report</TableHeaderCell>
                 <TableHeaderCell>Verdict</TableHeaderCell>
-                <TableHeaderCell className="w-[28%]">Reason</TableHeaderCell>
+                <TableHeaderCell className="w-[20%]">Reason</TableHeaderCell>
                 <TableHeaderCell>Email</TableHeaderCell>
                 <TableHeaderCell>{/* Actions */}</TableHeaderCell>
               </TableRow>

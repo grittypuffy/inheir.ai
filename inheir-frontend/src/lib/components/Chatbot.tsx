@@ -164,7 +164,7 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
             </>
           )}
         </div>
-        <div className="bg-gray-100 border-t-2 flex-0">
+        <div className="bg-gray-100 border-t-2 flex-1">
           <form className="flex items-center p-3 gap-3 h-full" onSubmit={handleSubmit}>
             <Textarea
               type="text"

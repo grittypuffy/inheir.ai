@@ -425,7 +425,7 @@ const AuthForm = () => {
                 />
                 <Button
                   type="submit"
-                  className="w-full max-w-xs mx-auto hover:shadow-md"
+                  className="w-full mx-auto hover:shadow-md"
                   disabled={!isPolicyAccepted || isLoading}
                 >
                   {isLoading ? <Spinner size="extra-small" /> : 'Submit'}
