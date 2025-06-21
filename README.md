@@ -21,6 +21,37 @@
 
 InHeir.AI is an intelligent and secure legal tech platform developed to streamline property dispute management and analysis legal professionals and local communities. By harnessing the capabilities of large language models (LLMs) and principles of privacy, the solution stands to ensuring data privacy, security and accuracy by adhering to responsible AI practices while ensuring responses are backed by established legal procedures. InHeir.AI aims to serve globalized requirements by providing a modular platform that can support tailored and updated legal establishments for catering to different needs beyond legal institutions.
 
+# Table of Contents
+
+1. [**Overview**](#overview)  
+2. [**Why?**](#why)  
+3. [**Design**](#design)  
+4. [**Features**](#features)  
+   - [Case Creation and Management](#case-creation-and-management)  
+   - [Geo-spatial Visualization](#geo-spatial-visualization)  
+   - [Integration with Knowledge Base](#integration-with-knowledge-base)  
+   - [Standalone Chatbot](#standalone-chatbot)  
+   - [Property Reporting and Management](#property-reporting-and-management)  
+5. [**Working**](#working)  
+   - [Document Summarization](#document-summarization)  
+   - [Geographical Information System (GIS) Analysis](#geographical-information-system-gis-analysis)  
+   - [Integrated Knowledge Base](#integrated-knowledge-base)  
+   - [Modular, Contextual Chatbot](#modular-contextual-chatbot)  
+   - [Property Reporting](#property-reporting)  
+   - [Security](#security)  
+6. [**Architecture**](#architecture)  
+7. [**Technologies Used**](#technologies-used)  
+8. [**Screenshots**](#screenshots)  
+9. [**Challenges**](#challenges)  
+10. [**Impact**](#impact)  
+11. [**Future Enhancements**](#future-enhancements)  
+12. [**Proposal**](#proposal)  
+13. [**Contributing**](#contributing)  
+14. [**Deployment**](#deployment)  
+15. [**Try**](#try)  
+16. [**Licensing**](#licensing)
+
+
 ## Why?
 
 - **Cumbersome and expensive legal processes** resulting in vulnerable population losing accessibility to legal procedures, inherently causing them to lose their titles and properties.
