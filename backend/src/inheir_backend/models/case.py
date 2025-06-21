@@ -52,16 +52,16 @@ class ChatMetaResponse(BaseModel):
 
 class Entity(BaseModel):
     name: str
-    entity_type: str
-    valid: bool
+    entity_type: str = "person"
+    valid: bool = False
 
 
 class Asset(BaseModel):
-    name: str
-    location: str | None
-    asset_type: str
-    net_worth: str | None
-    coordinates: str | None
+    name: str = "Property"
+    location: str | None = None
+    asset_type: str = "Property"
+    net_worth: str | None = None
+    coordinates: str | None = None
 
 class CaseSummary(BaseModel):
     case_id: str

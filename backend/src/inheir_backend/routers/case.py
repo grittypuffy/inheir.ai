@@ -78,7 +78,6 @@ async def is_admin(req: Request):
     )
 
 
-
 @router.post("/create")
 async def create_case(
     req: Request,
@@ -120,8 +119,41 @@ async def create_case(
                 "reason": "Invalid document. Document contains no readable text."
             }
         )
-    else:
-        document_content = document_content.strip()
+    document_content = document_content.strip()
+    
+    # Azure AI Language PII Extraction
+    persons = []
+    properties = []
+
+    try:
+        text_analytics_client = config.text_analysis_client
+        pii_result = text_analytics_client.recognize_pii_entities([document_content])
+        logging.info("PII result", pii_result)
+        logging.info("0 index", pii_result[0])
+        pii_result = pii_result[0]
+        if not pii_result.is_error:
+            for entity in pii_result.entities:
+                if entity.category == "Person":
+                    item = {
+                        "name": entity.text,
+                        "valid": True,
+                        "entity_type": "person"
+                    }
+                    persons.append(item)
+                elif entity.category in ["Organization", "Address", "Location"]:
+                    item = {
+                        "name": entity.text,
+                        "location": entity.text,
+                        "asset_type": entity.category,
+                        "coordinates": None,
+                        "net_worth": None
+                    }
+                    properties.append(item)
+        else:
+            logging.warning(f"PII extraction error: {pii_result.error}")
+    except Exception as e:
+        logging.error(f"Azure PII detection failed: {e}")
+
     supporting_document_content = []
     for idx, supporting_doc_url in enumerate(supporting_documents_urls):
         supporting_doc_content = process_upload_document(supporting_document_url)
@@ -146,7 +178,8 @@ async def create_case(
         case_summ_dict["supporting_document_content"] = response.pop("supporting_documents")
         case_summ_dict["document"] = document_url
         case_summ_dict["supporting_documents"] = supporting_documents_urls
-
+        case_summ_dict["entities"] = persons
+        case_summ_dict["properties"] = properties
         if valid := case_summ_dict.get("valid") is None:
             case_summ_dict["valid"] = False
         if legitimate := case_summ_dict.get("legitimate") is None:

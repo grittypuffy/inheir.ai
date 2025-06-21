@@ -4,7 +4,7 @@ from azure.core.credentials import AzureKeyCredential
 from langchain_openai import AzureChatOpenAI
 from azure.search.documents import SearchClient
 from openai import AzureOpenAI
-
+from azure.ai.textanalytics import TextAnalyticsClient
 
 def get_document_analysis_client(form_recognizer_endpoint: str, form_recognizer_key: str) -> DocumentAnalysisClient:
     document_analysis_client = DocumentAnalysisClient(
@@ -50,3 +50,10 @@ def get_search(index_name: str, api_key: str, ai_search_endpoint: str) -> Search
     search_client = SearchClient(
         endpoint=ai_search_endpoint, index_name=index_name, credential=AzureKeyCredential(api_key))
     return search_client
+
+def get_text_analysis_client(text_analysis_endpoint: str, text_analysis_key: str) -> TextAnalyticsClient:
+    text_analysis_client = TextAnalyticsClient(
+        endpoint=text_analysis_endpoint,
+        credential=AzureKeyCredential(text_analysis_key)
+    )
+    return text_analysis_client
