@@ -161,7 +161,7 @@ InHeir.AI follows a hybrid approach towards API architecture in the sense it sup
   - **FastAPI** for API server with automatic OpenAPI integration, allowing integration in data pipelines or usage via API management services like Azure Front Door for scalable access.
   - **LangChain** for contextual prompt evaluation using Azure OpenAI for structured and reliable prompt responses.
   - **Azure Functions** for serverless, scalable, cost-effective computation, required for standalone chatbot and data cleaning for maintaining independence from main API.
-  - **Azure CosmosDB for MongoDB** for storage of unstructured data, ready for processing with external data pipelines, for aggregated property risk data. 
+  - **Azure CosmosDB for MongoDB** for storage of unstructured data, ready for processing with external data pipelines, for aggregated property risk data.
   - **OpenCage** for geocoding physical addresses to estimate latitude and longitude.
   - **Azure SDK for Python** for interaction with several  deployed Azure services for functionality of the application.
 
@@ -170,6 +170,22 @@ InHeir.AI follows a hybrid approach towards API architecture in the sense it sup
   - **Azure AI Search** for vector storage of property law documents with embeddings for querying via the chatbot for grounded legal assistance with cases.
   - **Azure Container Registry** for storage of container images (Docker) for continuous deployment with GitHub Actions to Azure App Service and Azure Functions.
   - **Azure App Service** for containerized, scalable and reliable deployment of web services and management of API server.
+
+# Screenshots
+| InHeir.AI Screenshots |
+| --- |
+| ![InHeir.AI Cover Image](./assets/cover_image.jpg) |
+
+
+| Home Page | User Dashboard |
+| --- | --- |
+| ![Dashboard](./assets/home_page.jpg) | ![User Dashboard](./assets/user_dashboard.jpg) |
+| Report Dashboard | Report Creation Form |
+| ![Report Dashboard](./assets/report_dashboard.jpg) | ![Report Creation Form](./assets/report_creation_form.jpg) |
+| Case Page | Case Creation Form |
+| ![Case Page](./assets/case_page.jpg) | ![Case Creation Form](./assets/case_creation_form.jpg) |
+| Chatbot Feature | GIS Feature |
+| ![Chatbot Feature](./assets/case_page_chatbot.jpg) | ![GIS Feature](./assets/case_page_gis.jpg) |
 
 # Challenges
 
