@@ -21,6 +21,12 @@
 
 InHeir.AI is an intelligent and secure legal tech platform developed to streamline property dispute management and analysis legal professionals and local communities. By harnessing the capabilities of large language models (LLMs) and principles of privacy, the solution stands to ensuring data privacy, security and accuracy by adhering to responsible AI practices while ensuring responses are backed by established legal procedures. InHeir.AI aims to serve globalized requirements by providing a modular platform that can support tailored and updated legal establishments for catering to different needs beyond legal institutions.
 
+> NOTE: Demo instance is available at https://inheir.plumespaces.com
+> To access as an administrator to test the dashboard for property reports, use > these credentials:
+> username: admin
+> password: admin
+> 
+
 # Table of Contents
 
 1. [**Overview**](#overview)  
@@ -48,8 +54,6 @@ InHeir.AI is an intelligent and secure legal tech platform developed to streamli
 12. [**Proposal**](#proposal)  
 13. [**Contributing**](#contributing)  
 14. [**Deployment**](#deployment)  
-15. [**Try**](#try)  
-16. [**Licensing**](#licensing)
 
 
 ## Why?
@@ -286,15 +290,6 @@ cp backend/.env.sample backend/.env
 # Deployment
 
 For information regarding deployment of InHeir.AI on Azure, please check out [our guide](./deployment/README.md) for it which covers dependencies, process and troubleshooting.
-
-# Try
-
-We have a demo running at https://inheir.plumespaces.com
-
-To access as an administrator to test the dashboard for property reports, use these credentials:
-
-username: admin
-password: admin
 
 # Team
 
