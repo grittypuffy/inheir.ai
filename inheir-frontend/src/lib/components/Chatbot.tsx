@@ -130,7 +130,7 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <div className=" p-4 flex flex-col shrink-0 overflow-y-auto scroll-smooth h-full max-h-[calc(90vh-70px)]">
+        <div id="chat-container" className="p-4 flex flex-col shrink-0 overflow-y-auto scroll-smooth h-full max-h-[calc(90vh-70px)]" ref={el => { if (el && chatHistory.length > 0) el.scrollTop = el.scrollHeight; }}>
           {isLoading ? (
             <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
