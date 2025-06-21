@@ -17,7 +17,6 @@ config: AppConfig = AppConfig()
 router = APIRouter(tags=["Chatbot"])
 
 
-# Prompt templates
 chatbot_case_template = """\
 You are a legal assistant analyzing a legal case document to answer a user query.
 
@@ -45,11 +44,9 @@ Guidelines:
 - Give generic answers if needed.
 """
 
-# Prompt template loaders
 chatbot_case_prompt_template = ChatPromptTemplate.from_template(chatbot_case_template)
 chatbot_law_prompt_template = ChatPromptTemplate.from_template(chatbot_law_template)
 
-# Helper to chunk text
 def chunk_text(text: str, max_chunk_size: int = 1000):
     return [text[i:i+max_chunk_size] for i in range(0, len(text), max_chunk_size)]
 
@@ -109,7 +106,6 @@ async def chat(
             final_response = "\n\n".join(response_chunks) if response_chunks else "No relevant case information found."
 
         else:
-            # No case, just generic law Q&A
             chain = LLMChain(
                 llm=client,
                 prompt=chatbot_law_prompt_template
@@ -117,7 +113,6 @@ async def chat(
             result = chain.invoke({"query": query})
             final_response = result.get("text", "No response generated.")
 
-        # Save chat history
         chat_history_doc = {
             "query": {
                 "role": "user",

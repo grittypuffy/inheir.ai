@@ -43,11 +43,10 @@ async def create_report(
 async def get_reports(
     req: Request
 ):
-
     if not req.state.user:
-            raise HTTPException(status_code=404, detail=f"Not found")
+        raise HTTPException(status_code=404, detail=f"Page Not found")
     user_role = req.state.user.get("role")
-    if user_role is not "Admin":
+    if user_role != "Admin":
         raise HTTPException(status_code=404, detail=f"Not found")   
 
     report_collection = config.db['report']
@@ -70,9 +69,9 @@ async def get_reports(
 async def verify_report(report_id: str, req: Request, body: Reason):
     if not req.state.user:
         raise HTTPException(status_code=404, detail="Not found")
-    
-    if not req.state.user.get("role") != "Admin":
-        raise HTTPException(status_code=404, detail="Not found")
+    user_role = req.state.user.get("role")    
+    if user_role != "Admin":
+        raise HTTPException(status_code=404, detail=f"Not found")   
 
     report_collection = config.db["report"]
 
@@ -97,8 +96,8 @@ async def verify_report(report_id: str, req: Request, body: Reason):
 async def unverify_report(report_id: str, req: Request, body: Reason):
     if not req.state.user:
         raise HTTPException(status_code=404, detail="Not found")
-    
-    if not req.state.user.get("role") != "Admin":
+    user_role = req.state.user.get("role")    
+    if user_role != "Admin":
         raise HTTPException(status_code=404, detail="Not found")
 
     report_collection = config.db["report"]
