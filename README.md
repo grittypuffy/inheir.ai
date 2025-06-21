@@ -60,7 +60,7 @@ InHeir.AI's ultimate aim is to accelerate communities working in addressing prop
 
 ## Case creation and management
 
-Users can create a new case by uploading their property documents (will, deed, probate) along with optional supporting documents (tax files, letters, etc.) processed by [document summarization](#document-summarization) for extraction of summary of data, containing information such as:
+Users can create a new case by uploading their property documents (will, deed, probate) along with optional supporting documents (tax files, letters, etc.) processed by [document summarization](#document-summarization) and ownership chaining for extraction of summary of data, containing information such as:
 
 - Entities involved
 - Properties mentioned
