@@ -118,3 +118,4 @@ docker run -p 3000:3000 inheir-frontend:production
 ## License
 
 Inheir.AI is licensed under the MIT License. For more information, check [LICENSE](/LICENSE).
+
