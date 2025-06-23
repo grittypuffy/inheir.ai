@@ -225,7 +225,7 @@ export const CreateCase = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Field label="Supporting Documents (Optional)" required>
+                  <Field label="Supporting Documents (Optional)">
                     <div className="flex flex-col w-full border-2 border-gray-300 border-dashed rounded-lg p-4 bg-gray-50">
                       <input
                         ref={supportingDocumentsRef}
