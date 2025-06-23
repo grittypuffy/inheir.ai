@@ -319,22 +319,22 @@ export default function Page() {
 
                               <div className="flex flex-row justify-between">
                                 <span className="ml-2">Asset Type:</span>
-                                <span className="ml-2">{entry.asset_type}</span>
+                                <span className="ml-2">{entry.asset_type || "N/A"}</span>
                               </div>
 
                               <div className="flex flex-row justify-between">
                                 <span className="ml-2">Net Worth:</span>
-                                <span className="ml-2 text-gray-500">{entry.net_worth}</span>
+                                <span className="ml-2 text-gray-500">{entry.net_worth || "N/A"}</span>
                               </div>
 
                               <div className="flex flex-row justify-between">
                                 <span className="ml-2">Location:</span>
-                                <span className="ml-2 text-gray-500">{entry.location}</span>
+                                <span className="ml-2 text-gray-500">{entry.location || "N/A"}</span>
                               </div>
 
                               <div className="flex flex-row justify-between">
                                 <span className="ml-2">Coordinates:</span>
-                                <span className="ml-2 text-gray-500">{entry.coordinates}</span>
+                                <span className="ml-2 text-gray-500">{entry.coordinates || "N/A"}</span>
                               </div>
                             </div>
                           ))
