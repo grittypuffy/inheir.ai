@@ -250,17 +250,6 @@ export default function Page() {
                       <div>
                         <h1 className="text-md lg:text-lg font-medium text-gray-600">Case Summary</h1>
                       </div>
-                      <div>
-                        {isLoading ? (
-                          <p className="text-md text-gray-500">Loading case summary...</p>
-                        ) : caseData?.summary?.summary ? (
-                          <p className="text-md text-gray-700">
-                            {caseData.summary.summary || "No summary available"}
-                          </p>
-                        ) : (
-                          <p className="text-md text-gray-500">No summary available</p>
-                        )}
-                      </div>
                       <div className="flex flex-col gap-2">
                         <p className="text-md text-gray-500">Case Type:</p>
                         <p className="text-md text-gray-700">
@@ -460,7 +449,7 @@ export default function Page() {
               <div className="w-full h-20 grid place-items-center bg-gray-100 border-b-2">
                 <TabList selectedValue={selectedTab} onTabSelect={handleTabSelect}>
                   <Tab value={'chatbot'}>AI Assistant</Tab>
-                  {/* <Tab value={'documents'}>Documents Summary</Tab> */}
+                  <Tab value={'documents'}>Documents</Tab>
                   <Tab value={'gis'}>GIS</Tab>
                 </TabList>
               </div>
@@ -473,9 +462,11 @@ export default function Page() {
                   selectedTab === 'chatbot' ? (
                     <ChatUI caseId={case_id} />
                   ) : selectedTab === 'documents' ? (
-                    <div className="flex items-center justify-center w-full h-full">
+                    <div className="flex items-center justify-center w-full h-full overflow-y-auto p-4">
                       {caseData?.summary?.summary ? (
-                        <></>
+                        <p className="text-md lg:text-lg text-gray-700">
+                          {caseData.summary.summary}
+                        </p>
                       ) : (
                         <p className="text-md text-gray-500">No document summary available</p>
                       )}
