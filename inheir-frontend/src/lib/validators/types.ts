@@ -46,7 +46,7 @@ export type ChatHistoryResponse = {
   reason: string | null;
 }
 
-export type CaseTabs = 'chatbot' | 'gis' | 'documents';
+export type CaseTabs = 'chatbot' | 'gis' | 'summary';
 
 export type CaseData = {
   meta: CaseResponse;
