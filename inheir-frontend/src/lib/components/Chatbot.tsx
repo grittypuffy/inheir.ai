@@ -2,6 +2,8 @@ import { Chat, ChatHistoryResponse, ChatResponse } from '@/lib/validators/types'
 import { Button, Textarea, TextareaOnChangeData } from '@fluentui/react-components';
 import { ArrowUpRegular } from '@fluentui/react-icons';
 import { ChangeEvent, useEffect, useState } from 'react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const ChatUI = ({ caseId }: { caseId: string }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -116,12 +118,15 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
     return (
       <div key={index} className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
         <div
-          className={`max-w-[70%] rounded-lg px-4 py-2 ${isUser
-            ? 'bg-blue-500 text-white rounded-br-none'
-            : 'bg-gray-200 text-gray-800 rounded-bl-none'
-            }`}
+          className={`max-w-[70%] rounded-lg px-4 py-2 ${
+            isUser
+              ? 'bg-blue-500 text-white rounded-br-none whitespace-pre-wrap'
+              : 'bg-gray-200 text-gray-800 rounded-bl-none whitespace-pre-wrap'
+          }`}
         >
-          <p className="whitespace-pre-wrap">{chat.content}</p>
+          <Markdown remarkPlugins={[remarkGfm]}>
+            {chat.content}
+          </Markdown>
         </div>
       </div>
     );
@@ -130,7 +135,13 @@ export const ChatUI = ({ caseId }: { caseId: string }) => {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <div id="chat-container" className="p-4 flex flex-col shrink-0 overflow-y-auto scroll-smooth h-full max-h-[calc(90vh-70px)]" ref={el => { if (el && chatHistory.length > 0) el.scrollTop = el.scrollHeight; }}>
+        <div
+          id="chat-container"
+          className="p-4 flex flex-col shrink-0 overflow-y-auto scroll-smooth h-full max-h-[calc(90vh-70px)]"
+          ref={(el) => {
+            if (el && chatHistory.length > 0) el.scrollTop = el.scrollHeight;
+          }}
+        >
           {isLoading ? (
             <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
