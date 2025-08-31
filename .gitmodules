@@ -1,6 +1,0 @@
-[submodule "backend"]
-	path = backend
-	url = git@github.com:grittypuffy/inheir-backend.git
-[submodule "frontend"]
-	path = frontend
-	url = git@github.com:vg006/inheir-frontend
