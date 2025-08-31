@@ -21,13 +21,10 @@ router = APIRouter(tags=["Case Analysis"])
 config: AppConfig = get_config()
 
 
-case_summary_system_template = """You are a legal assistant specialized in property and title resolution."""
+case_summary_system_template = """You are a legal assistant specialized in property and title resolution who generates insights on summary."""
 case_summary_user_template = """\
-### Document:
-{{{{ document }}}}
-
-### Supporting document:
-{{{{ supporting_documents }}}}
+### Documents summary:
+{{{{ document_summary }}}}
 
 {{{{
   "valid": boolean, # should be only true or false
@@ -49,8 +46,6 @@ case_summary_user_template = """\
       "coordinates": string | null
     }}
   ],
-  "summary": string,
-  "recommendations": [ string ],
   "references": [ string ]
 }}}}
 
@@ -86,7 +81,6 @@ async def create_case(
     title: Optional[str] = "Title",
     address: Optional[str] = None
 ):
-    logging.info(req.state.user)
     user_id = config.env.anonymous_user_id
     if req.state.user:
         user_id = req.state.user.get("user_id")
@@ -120,16 +114,12 @@ async def create_case(
             }
         )
     document_content = document_content.strip()
-    
-    # Azure AI Language PII Extraction
     persons = []
     properties = []
 
     try:
-        text_analytics_client = config.text_analysis_client
+        text_analytics_client = config.text_analytics_client
         pii_result = text_analytics_client.recognize_pii_entities([document_content])
-        logging.info("PII result", pii_result)
-        logging.info("0 index", pii_result[0])
         pii_result = pii_result[0]
         if not pii_result.is_error:
             for entity in pii_result.entities:
@@ -156,38 +146,59 @@ async def create_case(
 
     supporting_document_content = []
     for idx, supporting_doc_url in enumerate(supporting_documents_urls):
-        supporting_doc_content = process_upload_document(supporting_document_url)
+        supporting_doc_content = process_upload_document(supporting_doc_url)
         if supporting_doc_content is not None:
             supporting_doc_content = str(0+1) + ". " + supporting_doc_content
             supporting_document_content.append(supporting_doc_content.strip())
     try:
         client = config.langchain_llm
+        llm = config.llm
+        document_summary = llm.chat.completions.create(
+            model=config.env.azure_openai_model_name,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant who summarizes cases based on given legal documents."},
+                {"role": "user", "content": f"### Document\n{document_content}\n###Supporting documents\n{"\n".join(supporting_document_content)}"}
+            ],
+            max_tokens=400,
+            temperature=0.7
+        )
+        document_summary = document_summary.choices[0].message.content
+
+        recommendations = llm.chat.completions.create(
+            model=config.env.azure_openai_model_name,
+            messages=[
+               {"role": "system", "content": "You are a helpful assistant who summarizes cases based on given legal documents. Give only JSON list of strings, no object, no markdown, no formatting, no emoji, just content in string format in simple lay person English"},
+               {"role": "user", "content": f"Based on below summary\n {document_summary}\n provide clear, actionable insights on ownership and solving the dispute"}
+           ],
+           max_tokens=400,
+           temperature=0.7
+        )
+        recommendations = json.loads(recommendations.choices[0].message.content)
         chain = LLMChain(
             llm=client,
             prompt=case_summary_prompt_template
         )
+
+
         logging.info("Executing chain")
         chain_info = {
-            "document": document_content,
-            "supporting_documents": "\n".join(supporting_document_content)
+            "document_summary": document_summary
         }
+
         response = chain.invoke(chain_info)
         case_summ_dict = json.loads(response.pop("text"))
         case_summ_dict["case_id"] = case_id
-        case_summ_dict["document_content"] = response.pop("document")
-        case_summ_dict["supporting_document_content"] = response.pop("supporting_documents")
+        case_summ_dict["document_content"] = document_content
+        case_summ_dict["supporting_document_content"] = "\n".join(supporting_document_content)
         case_summ_dict["document"] = document_url
         case_summ_dict["supporting_documents"] = supporting_documents_urls
-        case_summ_dict["entities"] = persons
-        case_summ_dict["properties"] = properties
-        if valid := case_summ_dict.get("valid") is None:
-            case_summ_dict["valid"] = False
-        if legitimate := case_summ_dict.get("legitimate") is None:
-            case_summ_dict["legitimate"] = False
+        case_summ_dict["entity"] = [dict(t) for t in {tuple(d.items()) for d in persons}]
+        case_summ_dict["asset"] = [dict(t) for t in {tuple(d.items()) for d in properties}]
+        case_summ_dict["recommendations"] = recommendations
+        case_summ_dict["summary"] = document_summary
+        case_summ_dict["valid"] = True
+        case_summ_dict["legitimate"] = True
         
-        if summary := case_summ_dict.get("summary") is None:
-            case_summ_dict["summary"] = "No summary generated"
-
         if case_type := case_summ_dict.get("case_type") is None:
             case_summ_dict["case_type"] = "Dispute"
         
@@ -312,7 +323,7 @@ async def resolve_case(req: Request, case_id: str, remarks: Remarks = Body(defau
     else:
         case_details_collection = config.db["case_details"]
         case_doc = await case_details_collection.find_one_and_update(
-            {"user_id": user_id, "case_id": case_id},
+            {"user_id": user_id, "_id": ObjectId(case_id)},
             { "$set": { "status": "Resolved" } }
         )
 
@@ -348,7 +359,7 @@ async def abort_case(req: Request, case_id: str, remarks: Remarks = Body(default
     else:
         case_details_collection = config.db["case_details"]
         case_doc = await case_details_collection.find_one_and_update(
-            {"user_id": user_id, "case_id": case_id},
+            {"user_id": user_id, "_id": ObjectId(case_id)},
             { "$set": { "status": "Aborted" } }
         )
         case_summary_collection = config.db['case_summary']

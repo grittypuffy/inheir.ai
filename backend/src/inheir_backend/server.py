@@ -9,8 +9,10 @@ from .middleware.auth import JWTMiddleware
 
 from .routers.api.v1 import router as v1_router
 
+# logging.getLogger("azure.core.pipeline.policies.http_logging_policy").setLevel(logging.WARNING)
+
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 

@@ -27,10 +27,12 @@ RUN poetry install
 
 RUN poetry add gunicorn
 
+RUN rm -rf /tmp/poetry_cache
+
 EXPOSE 80
 
 EXPOSE 443
 
 EXPOSE 8000
 
-ENTRYPOINT ["poetry", "run", "python", "-m", "gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker","-b", "0.0.0.0:8000","inheir_backend.server:app"]
+ENTRYPOINT ["poetry", "run", "python", "-m", "gunicorn", "-w", "3", "-k", "uvicorn.workers.UvicornWorker","-b", "0.0.0.0:8000","inheir_backend.server:app"]

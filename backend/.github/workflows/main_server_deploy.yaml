@@ -35,9 +35,9 @@ jobs:
         docker build --push -t ${{ secrets.ACR_LOGIN_SERVER }}/inheir-backend:latest .
 
 
-    - name: Deploy backend to Azure App Service
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ secrets.AZURE_APP_SERVICE_BACKEND }}
-        images: |
-          ${{ secrets.ACR_LOGIN_SERVER }}/inheir-backend:latest
+#    - name: Deploy backend to Azure App Service
+#      uses: azure/webapps-deploy@v2
+#      with:
+#        app-name: ${{ secrets.AZURE_APP_SERVICE_BACKEND }}
+#        images: |
+#          ${{ secrets.ACR_LOGIN_SERVER }}/inheir-backend:latest
