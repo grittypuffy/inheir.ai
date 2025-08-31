@@ -278,14 +278,14 @@ docker compose version
 -   Clone the repository and set up environment variables as per the `.env.sample` for the frontend and backend.
 
 ```sh
-git clone --recurse-submodules https://github.com/grittypuffy/inheir.ai
+git clone https://github.com/grittypuffy/inheir.ai
 cd inheir.ai
 
 cp frontend/.env.sample frontend/.env
 cp backend/.env.sample backend/.env
 ```
 
--   Build the services as mentioned in the corresponding repositories. For more information regarding local development, check out the README for [frontend](https://github.com/vg006/inheir-frontend) and [backend](https://github.com/grittypuffy/inheir-backend)
+-   Build the services as mentioned in the corresponding repositories. For more information regarding local development, check out the README for [frontend](./frontend/README.md) and [backend](backend/README.md)
 
 # Deployment
 
